@@ -41,9 +41,9 @@ cat << 'EOF' > ~/.local/share/themes/Gruvbox-BL-LB-Dark/openbox-3/themerc
 # Gruvbox Openbox Theme based on rofi/gruvbox_colors.rasi
 
 # General settings
-border.width: 0
-padding.width: 5
-padding.height: 5
+border.width: 1
+padding.width: 1
+padding.height: 1
 font.sans-serif: size=9
 
 # Window title text
