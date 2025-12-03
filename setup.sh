@@ -6,13 +6,16 @@
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr materia-gtk-theme rofi
+sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi
 
 # Create configuration directories
 mkdir -p ~/.config/openbox
 mkdir -p ~/.config/polybar
 mkdir -p ~/.config/rofi
 mkdir -p ~/.config/wallpaper
+mkdir -p ~/.local/share/themes
+
+tar -xvf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.local/share/themes/
 
 # Copy wallpaper files
 cp -r .config/wallpaper/* ~/.config/wallpaper/
@@ -120,8 +123,8 @@ lxappearance &
 EOF
 
 # Set the GTK theme to Materia-dark
-gsettings set org.gnome.desktop.interface gtk-theme "Materia-dark"
-gsettings set org.gnome.desktop.interface icon-theme "Materia-dark"
+gsettings set org.gnome.desktop.interface gtk-theme "Gruvbox-BL-LB-Dark"
+gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 
 echo "Installation complete. Please log out and select Openbox as your session."
 echo "You may need to run lxappearance to select the Materia-dark theme manually if the gsettings command fails."
