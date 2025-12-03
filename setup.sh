@@ -8,7 +8,7 @@ set -e
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig
+sudo apt-get install -y openbox curl wget unzip neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig
 
 # Download and install Font Awesome
 wget https://github.com/FortAwesome/Font-Awesome/releases/download/6.7.2/fontawesome-free-6.7.2-desktop.zip
@@ -32,7 +32,53 @@ cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
 cp -v .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
 chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
+# GTK Theme
 tar -xvf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.local/share/themes/
+
+# Create Gruvbox Openbox theme
+mkdir -p ~/.local/share/themes/Gruvbox-BL-LB-Dark/openbox-3
+cat << 'EOF' > ~/.local/share/themes/Gruvbox-BL-LB-Dark/openbox-3/themerc
+# Gruvbox Openbox Theme based on rofi/gruvbox_colors.rasi
+
+# General settings
+border.width: 2
+padding.width: 5
+padding.height: 5
+font.sans-serif: size=9
+
+# Window title text
+window.label.text.color: #ebdbb2
+
+# Active window
+window.active.title.bg.color: #458588
+window.active.label.text.color: #282828
+border.color: #458588
+window.active.button.unpressed.image.color: #ebdbb2
+window.active.button.pressed.image.color: #282828
+window.active.button.toggled.image.color: #98971a
+window.active.client.color: #ebdbb2
+
+# Inactive window
+window.inactive.title.bg.color: #3c3836
+window.inactive.label.text.color: #ebdbb2
+window.inactive.button.unpressed.image.color: #ebdbb2
+border.inactive.color: #3c3836
+window.inactive.client.color: #ebdbb2
+
+# Menu
+menu.title.bg.color: #282828
+menu.title.text.color: #ebdbb2
+menu.items.bg.color: #282828
+menu.items.text.color: #ebdbb2
+menu.items.active.bg.color: #458588
+menu.items.active.text.color: #282828
+
+# OSD
+osd.bg.color: #282828
+osd.text.color: #ebdbb2
+osd.border.color: #458588
+osd.border.width: 1
+EOF
 
 # Copy wallpaper files
 cp -r .config/wallpaper/* ~/.config/wallpaper/
