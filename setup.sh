@@ -41,7 +41,7 @@ cat << 'EOF' > ~/.local/share/themes/Gruvbox-BL-LB-Dark/openbox-3/themerc
 # Gruvbox Openbox Theme based on rofi/gruvbox_colors.rasi
 
 # General settings
-border.width: 2
+border.width: 0
 padding.width: 5
 padding.height: 5
 font.sans-serif: size=9
@@ -221,7 +221,6 @@ polybar &
 
 # Set dark theme
 xsettingsd &
-lxappearance
 EOF
 
 echo "Installation complete. Please log out and select Openbox as your session."
