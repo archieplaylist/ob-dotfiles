@@ -1,0 +1,92 @@
+/* Gruvbox Dark theme for Rofi */
+
+/* Palette (Gruvbox dark) */
+@bg:     #282828;
+@bg-alt: #3c3836;
+@bg-dim: #1d2021;
+@fg:     #ebdbb2;
+@muted:  #a89984;
+@red:    #cc241d;
+@green:  #98971a;
+@yellow: #d79921;
+@blue:   #458588;
+@purple: #b16286;
+@aqua:   #689d6a;
+
+window {
+    background: @bg;
+    border-radius: 8px;
+    border: 1px solid @bg-alt;
+    padding: 6px;
+}
+
+mainbox {
+    children: [inputbar, message, listview];
+    margin: 0 0 0 0;
+}
+
+inputbar {
+    children: [prompt, entry];
+    spacing: 8px;
+}
+
+prompt {
+    text-color: @green;
+    padding: 0 6px 0 6px;
+}
+
+entry {
+    text-color: @fg;
+    background: @bg-dim;
+    border-radius: 6px;
+    padding: 6px 8px;
+}
+
+message {
+    text-color: @muted;
+}
+
+listview {
+    lines: 12;
+    fixed-height: 0;
+    border-radius: 6px;
+    margin: 6px 0 0 0;
+}
+
+element {
+    padding: 8px 10px;
+    border-radius: 6px;
+    text-color: @fg;
+}
+
+element selected {
+    background: @blue;
+    text-color: @bg-dim;
+}
+
+element urgent {
+    background: @red;
+    text-color: @bg-dim;
+}
+
+scrollbar {
+    bar-color: @bg-alt;
+    handle-color: @muted;
+}
+
+tooltip {
+    background: @bg-alt;
+    text-color: @fg;
+    border-radius: 6px;
+}
+
+window.shortwindow {
+    width: 40%;
+}
+
+/* small tweaks for dmenu mode */
+dmenu {
+    background: @bg;
+    foreground: @fg;
+    selected: @blue;
+}

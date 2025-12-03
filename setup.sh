@@ -2,11 +2,13 @@
 
 # This script installs Openbox and some essential components on Debian-based systems.
 
+set -e
+
 # Update package lists
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi
+sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi
 
 # Create configuration directories
 mkdir -p ~/.config/openbox
@@ -14,6 +16,13 @@ mkdir -p ~/.config/polybar
 mkdir -p ~/.config/rofi
 mkdir -p ~/.config/wallpaper
 mkdir -p ~/.local/share/themes
+
+# Copy bundled Rofi theme and config into user config
+cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
+
+# Copy bundled Polybar launch script and make it executable
+cp -v .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
+chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
 tar -xvf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.local/share/themes/
 
@@ -23,12 +32,12 @@ cp -r .config/wallpaper/* ~/.config/wallpaper/
 # Create a simple dark Polybar config
 cat << 'EOF' > ~/.config/polybar/config.ini
 [colors]
-background = #2e3440
-background-alt = #4c566a
-foreground = #d8dee9
-primary = #88c0d0
-secondary = #81a1c1
-alert = #bf616a
+background = #282828
+background-alt = #3c3836
+foreground = #ebdbb2
+primary = #458588
+secondary = #98971a
+alert = #cc241d
 
 [bar/main]
 width = 100%
@@ -81,7 +90,7 @@ type = custom/script
 exec = ~/.config/rofi/powermenu.sh
 click-left = ~/.config/rofi/powermenu.sh
 format = <label>
-label = ""
+label = " p"
 label-foreground = ${colors.alert}
 
 [settings]
@@ -95,7 +104,8 @@ cat << 'EOF' > ~/.config/rofi/powermenu.sh
 
 options="Shutdown\nReboot\nLock\nSuspend\nLogout"
 
-chosen=$(echo -e "$options" | rofi -dmenu -p "Power Menu")
+# Use the gruvbox theme explicitly to ensure consistent colors
+chosen=$(echo -e "$options" | rofi -theme gruvbox-dark -dmenu -p "Power Menu")
 
 case "$chosen" in
     "Shutdown") systemctl poweroff ;;
@@ -115,16 +125,12 @@ cat << 'EOF' > ~/.config/openbox/autostart
 feh --bg-scale ~/.config/wallpaper/current &
 
 # Start Polybar
-polybar -r &
+polybar &
 
 # Set dark theme
 xsettingsd &
 lxappearance &
 EOF
-
-# Set the GTK theme to Materia-dark
-gsettings set org.gnome.desktop.interface gtk-theme "Gruvbox-BL-LB-Dark"
-gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark"
 
 echo "Installation complete. Please log out and select Openbox as your session."
 echo "You may need to run lxappearance to select the Materia-dark theme manually if the gsettings command fails."

@@ -1,0 +1,14 @@
+/* Rofi default config - use the gruvbox-dark theme */
+
+configuration {
+    theme: "gruvbox-dark";
+    modi: "drun,run,window,ssh";
+    show-icons: true;
+    display-backspace: true;
+    sidebar-mode: false;
+}
+
+/* Optional overrides */
+window {
+    width: 100%;
+}
