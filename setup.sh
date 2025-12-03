@@ -8,7 +8,15 @@ set -e
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi
+sudo apt-get install -y openbox curl wget neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig
+
+# Download and install Font Awesome
+wget https://github.com/FortAwesome/Font-Awesome/releases/download/6.7.2/fontawesome-free-6.7.2-desktop.zip
+unzip fontawesome-free-6.7.2-desktop.zip
+mkdir -p ~/.fonts
+cp -v fontawesome-free-6.7.2-desktop/otfs/*.otf ~/.fonts/
+rm -rf fontawesome-free-6.7.2-desktop fontawesome-free-6.7.2-desktop.zip
+fc-cache -f -v
 
 # Create configuration directories
 mkdir -p ~/.config/openbox
@@ -90,7 +98,7 @@ type = custom/script
 exec = ~/.config/rofi/powermenu.sh
 click-left = ~/.config/rofi/powermenu.sh
 format = <label>
-label = " p"
+label = "pwr"
 label-foreground = ${colors.alert}
 
 [settings]

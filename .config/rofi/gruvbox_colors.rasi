@@ -1,0 +1,38 @@
+/*******************************************************
+ * ROFI Gruvbox colors
+ *******************************************************/
+* {
+    background:                  #282828;
+    background-alt:              #3c3836;
+    foreground:                  #ebdbb2;
+    selected:                    #458588;
+    urgent:                      #cc241d;
+    active:                      #98971a;
+
+    selected-normal-foreground:  @foreground;
+    normal-foreground:           @foreground;
+    alternate-normal-background: @background-alt;
+    red:                         #cc241d;
+    selected-urgent-foreground:  @foreground;
+    blue:                        #458588;
+    urgent-foreground:           @urgent;
+    alternate-urgent-background: @background-alt;
+    active-foreground:           @active;
+    lightbg:                     @background-alt;
+    selected-active-foreground:  @foreground;
+    alternate-active-background: @background-alt;
+    alternate-normal-foreground: @foreground;
+    normal-background:           @background;
+    lightfg:                     @foreground;
+    selected-normal-background:  @selected;
+    border-color:                @selected;
+    spacing:                     2;
+    separatorcolor:              @selected;
+    urgent-background:           @background;
+    selected-urgent-background:  @urgent;
+    alternate-urgent-foreground: @urgent;
+    background-color:            @background;
+    alternate-active-foreground: @active;
+    active-background:           @background;
+    selected-active-background:  @active;
+}
