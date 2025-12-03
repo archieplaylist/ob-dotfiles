@@ -129,6 +129,9 @@ chmod +x ~/.config/rofi/powermenu.sh
 
 # Create Openbox autostart script
 cat << 'EOF' > ~/.config/openbox/autostart
+# Notif
+dunst &
+
 # Set wallpaper
 feh --bg-scale ~/.config/wallpaper/current &
 
@@ -137,7 +140,7 @@ polybar &
 
 # Set dark theme
 xsettingsd &
-lxappearance &
+lxappearance
 EOF
 
 echo "Installation complete. Please log out and select Openbox as your session."
