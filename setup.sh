@@ -106,8 +106,8 @@ line-size = 3pt
 border-size = 4pt
 border-color = #00000000
 
-padding-left = 0
-padding-right = 1
+padding-left = 2
+padding-right = 2
 
 module-margin = 1
 
@@ -117,7 +117,7 @@ font-2 = "Font Awesome 6 Free:style=Solid:pixelsize=10;1"
 font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=10;1"
 
 modules-left = xwindow
-modules-right = power date
+modules-right = cpu memory network pulseaudio date power
 
 cursor-click = pointer
 cursor-scroll = ns-resize
@@ -128,6 +128,45 @@ tray-padding = 2
 [module/xwindow]
 type = internal/xwindow
 label = %title:0:60:...%
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format = <label>
+format-prefix = " "
+format-prefix-foreground = ${colors.secondary}
+label = %percentage:2%%
+
+[module/memory]
+type = internal/memory
+interval = 2
+format = <label>
+format-prefix = " "
+format-prefix-foreground = ${colors.secondary}
+label = %gb_used%
+
+[module/network]
+type = internal/network
+interval = 3.0
+format-connected-prefix = " "
+format-connected-prefix-foreground = ${colors.secondary}
+format-connected = <label-connected>
+label-connected = %essid%
+format-disconnected = <label-disconnected>
+format-disconnected-prefix = " "
+label-disconnected = Disconnected
+label-disconnected-foreground = ${colors.foreground}
+
+[module/pulseaudio]
+type = internal/pulseaudio
+use-ui-max = false
+format-volume = <ramp-volume> <label-volume>
+label-volume = %percentage%%
+label-muted =  Muted
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+click-right = pavucontrol
 
 [module/date]
 type = internal/date
@@ -141,7 +180,6 @@ label-foreground = ${colors.foreground}
 
 [module/power]
 type = custom/script
-exec = ~/.config/rofi/powermenu.sh
 click-left = ~/.config/rofi/powermenu.sh
 format = <label>
 label = "pwr"
