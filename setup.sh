@@ -52,7 +52,8 @@ window.label.text.color: #ebdbb2
 # Active window
 window.active.title.bg.color: #458588
 window.active.label.text.color: #282828
-border.color: #458588
+# border.color: #458588
+border.color: #ebdbb2
 window.active.button.unpressed.image.color: #ebdbb2
 window.active.button.pressed.image.color: #282828
 window.active.button.toggled.image.color: #98971a
@@ -214,7 +215,7 @@ cat << 'EOF' > ~/.config/openbox/autostart
 dunst &
 
 # Set wallpaper
-feh --bg-scale ~/.config/wallpaper/current &
+feh --bg-scale ~/.config/wallpaper/7.jpg
 
 # Start Polybar
 polybar &
