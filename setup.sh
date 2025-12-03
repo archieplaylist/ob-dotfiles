@@ -117,13 +117,10 @@ font-2 = "Font Awesome 6 Free:style=Solid:pixelsize=10;1"
 font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=10;1"
 
 modules-left = xwindow
-modules-right = cpu memory network pulseaudio date power
+modules-right = cpu memory network pulseaudio date tray powermenu
 
 cursor-click = pointer
 cursor-scroll = ns-resize
-
-tray-position = right
-tray-padding = 2
 
 [module/xwindow]
 type = internal/xwindow
@@ -178,11 +175,11 @@ date-alt = %Y-%m-%d %H:%M:%S
 label = %date%
 label-foreground = ${colors.foreground}
 
-[module/power]
+[module/powermenu]
 type = custom/script
 click-left = ~/.config/rofi/powermenu.sh
 format = <label>
-label = "pwr"
+label = ""
 label-foreground = ${colors.alert}
 
 [settings]
