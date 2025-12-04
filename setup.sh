@@ -28,7 +28,7 @@ mkdir -p ~/.local/share/themes
 # Copy bundled Rofi theme and config into user config
 cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
 
-# Copy bundled Polybar launch script and make it executable
+# Copy bundled Polybar rrch script and make it executable
 cp -v .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
 chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
@@ -168,10 +168,11 @@ click-right = pavucontrol
 
 [module/date]
 type = internal/date
+click-right = ~/.config/rofi/powermenu.sh
 interval = 1
 
 date = %H:%M
-date-alt = %Y-%m-%d %H:%M:%S
+date-alt = %d-%m-%Y %H:%M:%S
 
 label = %date%
 label-foreground = ${colors.foreground}
@@ -215,7 +216,7 @@ cat << 'EOF' > ~/.config/openbox/autostart
 dunst &
 
 # Set wallpaper
-feh --bg-scale ~/.config/wallpaper/7.jpg
+feh --bg-scale ~/.config/wallpaper/7.jpg &
 
 # Start Polybar
 polybar &
