@@ -125,6 +125,12 @@ modules-right = cpu memory network pulseaudio date tray powermenu
 cursor-click = pointer
 cursor-scroll = ns-resize
 
+[module/tray]
+type = internal/tray
+format-margin = 8pt
+tray-spacing = 10pt
+; background = ${colors.background}
+
 [module/xwindow]
 type = internal/xwindow
 label = %title:0:60:...%
@@ -153,7 +159,7 @@ interval = 3.0
 format-connected-prefix = " "
 format-connected-prefix-foreground = ${colors.secondary}
 format-connected = <label-connected>
-label-connected = %essid%
+; label-connected = %essid%
 format-disconnected = <label-disconnected>
 format-disconnected-prefix = " "
 label-disconnected = Disconnected
