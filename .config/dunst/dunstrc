@@ -110,7 +110,8 @@
 
     ### Text ###
 
-    font = Noto Sans Regular 9
+    # Use main UI font with Font Awesome 6 for icons
+    font = "Noto Sans Regular 9, Font Awesome 6 Free 9"
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -293,24 +294,24 @@
     # Otherwise the "#" and following would be interpreted as a comment.
     background = "#282828"
     foreground = "#ebdbb2"
-    timeout = 5
-    # Icon for notifications with low urgency, uncomment to enable
-    icon = /usr/share/icons/Arc-X-D/status/16/dialog-information.png
+    timeout = 3
+    # Icon for notifications with low urgency (Font Awesome 6 glyph)
+    icon = ""
 
 [urgency_normal]
     background = "#282828"
     foreground = "#ebdbb2"
-    timeout = 5
-    # Icon for notifications with normal urgency, uncomment to enable
-    icon = /usr/share/icons/Arc-X-D/status/16/dialog-question.png
+    timeout = 3
+    # Icon for notifications with normal urgency (Font Awesome 6 glyph)
+    icon = ""
 
 [urgency_critical]
     background = "#282828"
     foreground = "#ebdbb2"
     frame_color = "#fb4934"
     timeout = 120
-    # Icon for notifications with critical urgency, uncomment to enable
-    icon = /usr/share/icons/Arc-X-D/status/16/dialog-warning.png
+    # Icon for notifications with critical urgency (Font Awesome 6 glyph)
+    icon = ""
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.

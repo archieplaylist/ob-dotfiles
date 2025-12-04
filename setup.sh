@@ -7,7 +7,7 @@ set -e
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal xfce4-clipman lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
+sudo apt-get install -y openbox curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm kitty xfce4-terminal xfce4-clipman lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
 
 # LightDM Conf
 sudo systemctl enable lightdm
@@ -24,6 +24,8 @@ rm -rf fontawesome-free-6.7.2-desktop fontawesome-free-6.7.2-desktop.zip
 fc-cache -f -v
 
 # Create configuration directories
+mkdir -p ~/.config/dunst
+mkdir -p ~/.config/kitty
 mkdir -p ~/.config/openbox
 mkdir -p ~/.config/picom
 mkdir -p ~/.config/polybar
@@ -31,13 +33,19 @@ mkdir -p ~/.config/rofi
 mkdir -p ~/.config/wallpaper
 mkdir -p ~/.local/share/themes
 
+# Copy Dunst config
+cp -v .config/dunst/* ~/.config/dunst/ 2>/dev/null || true
+
+# Copy Kitty config
+cp -v .config/kitty/*.conf ~/.config/kitty/ 2>/dev/null || true
+
 # Copy Picom config
 cp -v .config/picom/*.conf ~/.config/picom/ 2>/dev/null || true
 
-# Copy bundled Rofi theme and config into user config
+# Copy Rofi theme and config into user config
 cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
 
-# Copy bundled Polybar launch script and make it executable
+# Copy Polybar launch script and make it executable
 cp -v .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
 chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
