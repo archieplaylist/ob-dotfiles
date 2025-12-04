@@ -227,13 +227,20 @@ tray-spacing = 5pt
 [module/xworkspace]
 type = internal/xworkspaces
 enable-click = true
-; Focused / unfocused labels — using a small dot icon for focused
-label-focused = " %name%"
-label-unfocused = "%name%"
-label-urgent = "%name%"
-label-empty = "%name%"
-; spacing and formatting
-module-margin = 2
+label-active = %name%
+label-active-padding = 1
+
+label-occupied = %name%
+label-occupied-padding = 1
+
+label-urgent = %name%
+label-urgent-padding = 1
+
+label-empty = %name%
+label-empty-foreground = ${colors.disabled}
+label-empty-background = ${colors.background-alt}
+label-empty-padding = 1
+
 
 [module/cpu]
 type = internal/cpu
