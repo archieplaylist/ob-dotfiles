@@ -185,7 +185,6 @@ GTKSET
 
     rm -rf "$tmpdir"
 fi
- 
 
 # Create a simple dark Polybar config
 cat << 'EOF' > ~/.config/polybar/config.ini
