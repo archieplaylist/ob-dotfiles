@@ -8,7 +8,7 @@ set -e
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget unzip neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig
+sudo apt-get install -y openbox curl wget unzip neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
 
 xdg-user-dirs-update
 
@@ -89,6 +89,87 @@ EOF
 
 # Copy wallpaper files
 cp -r .config/wallpaper/* ~/.config/wallpaper/
+
+# Ensure GTK2 apps use the Gruvbox theme
+# Write a GTK2 rc file so legacy GTK2 apps pick up the theme
+cat > ~/.gtkrc-2.0 <<'GTKRC'
+gtk-theme-name="Gruvbox-BL-LB-Dark"
+gtk-icon-theme-name="Papirus-Dark"
+gtk-font-name="Sans 9"
+GTKRC
+
+# Write GTK3 settings file so GTK3 apps pick up the theme
+mkdir -p ~/.config/gtk-3.0
+cat > ~/.config/gtk-3.0/settings.ini <<'GTK3'
+[Settings]
+gtk-theme-name = Gruvbox-BL-LB-Dark
+gtk-icon-theme-name = Papirus-Dark
+gtk-font-name = Sans 9
+GTK3
+
+# Write GTK4 settings file (some GTK4 apps respect this)
+mkdir -p ~/.config/gtk-4.0
+cat > ~/.config/gtk-4.0/settings.ini <<'GTK4'
+[Settings]
+gtk-theme-name = Gruvbox-BL-LB-Dark
+gtk-icon-theme-name = Papirus-Dark
+gtk-font-name = Sans 9
+GTK4
+
+# Download and install Bibata cursor theme v2.0.7 (Bibata-Modern-Classic)
+tmpdir=$(mktemp -d)
+echo "Downloading Bibata cursor theme to $tmpdir"
+url="https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz"
+if command -v wget >/dev/null 2>&1; then
+    wget -qO "$tmpdir/bibata.tar.xz" "$url" || true
+elif command -v curl >/dev/null 2>&1; then
+    curl -sL -o "$tmpdir/bibata.tar.xz" "$url" || true
+fi
+if [ -f "$tmpdir/bibata.tar.xz" ]; then
+    mkdir -p "$HOME/.icons"
+    tar -xJf "$tmpdir/bibata.tar.xz" -C "$tmpdir" || true
+    # The tarball should extract a directory containing the theme(s)
+    extracted_dir=$(find "$tmpdir" -maxdepth 1 -type d -name 'Bibata*' -print -quit)
+    if [ -d "$extracted_dir" ]; then
+        # Copy any theme directories found inside the extracted dir into ~/.icons
+        for theme in "$extracted_dir"/*; do
+            if [ -d "$theme" ]; then
+                echo "Installing cursor theme: $(basename "$theme")"
+                cp -r "$theme" "$HOME/.icons/" 2>/dev/null || true
+            fi
+        done
+    fi
+
+    # Prefer the official folder name
+    if [ -d "$HOME/.icons/Bibata-Modern-Classic" ]; then
+        cursor_name="Bibata-Modern-Classic"
+    else
+        cursor_name=$(ls -1 "$HOME/.icons" 2>/dev/null | grep -i bibata | head -n1 || ls -1 "$HOME/.icons" 2>/dev/null | head -n1 || echo "Bibata-Modern-Classic")
+    fi
+
+    mkdir -p "$HOME/.icons/default"
+    cat > "$HOME/.icons/default/index.theme" <<IDX
+[Icon Theme]
+Inherits=$cursor_name
+IDX
+
+    # Export XCURSOR_THEME in ~/.profile if not already set
+    if ! grep -q '^export XCURSOR_THEME=' "$HOME/.profile" 2>/dev/null; then
+        echo "export XCURSOR_THEME=\"$cursor_name\"" >> "$HOME/.profile"
+    fi
+
+    # Update GTK settings to reference the cursor theme
+    for gtkfile in "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini"; do
+        if [ -f "$gtkfile" ]; then
+            if ! grep -q '^gtk-cursor-theme-name' "$gtkfile" 2>/dev/null; then
+                printf "\ngtk-cursor-theme-name = %s\n" "$cursor_name" >> "$gtkfile"
+            fi
+        fi
+    done
+
+    rm -rf "$tmpdir"
+fi
+ 
 
 # Create a simple dark Polybar config
 cat << 'EOF' > ~/.config/polybar/config.ini
@@ -259,7 +340,7 @@ nm-applet &
 feh --bg-scale ~/.config/wallpaper/7.jpg &
 
 # Start Polybar
-polybar &
+polybar -r &
 
 # Set dark theme
 xsettingsd &
