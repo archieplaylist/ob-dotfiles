@@ -212,7 +212,7 @@ font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = "Font Awesome 6 Free:style=Solid:pixelsize=10;1"
 font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=10;1"
 
-modules-left = launcher xwindow
+modules-left = launcher xworkspace
 modules-right = tray cpu memory network pulseaudio date powermenu
 
 cursor-click = pointer
@@ -224,9 +224,16 @@ format-margin = 4pt
 tray-spacing = 5pt
 ; background = ${colors.background}
 
-[module/xwindow]
-type = internal/xwindow
-label = %title:0:60:...%
+[module/xworkspace]
+type = internal/xworkspaces
+enable-click = true
+; Focused / unfocused labels — using a small dot icon for focused
+label-focused = " %name%"
+label-unfocused = "%name%"
+label-urgent = "%name%"
+label-empty = "%name%"
+; spacing and formatting
+module-margin = 2
 
 [module/cpu]
 type = internal/cpu
