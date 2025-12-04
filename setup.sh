@@ -22,10 +22,14 @@ fc-cache -f -v
 
 # Create configuration directories
 mkdir -p ~/.config/openbox
+mkdir -p ~/.config/picom
 mkdir -p ~/.config/polybar
 mkdir -p ~/.config/rofi
 mkdir -p ~/.config/wallpaper
 mkdir -p ~/.local/share/themes
+
+# Copy Picom config
+cp -v .config/picom/*.conf ~/.config/picom/ 2>/dev/null || true
 
 # Copy bundled Rofi theme and config into user config
 cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
@@ -119,7 +123,7 @@ font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = "Font Awesome 6 Free:style=Solid:pixelsize=10;1"
 font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=10;1"
 
-modules-left = xwindow
+modules-left = launcher xwindow
 modules-right = tray cpu memory network pulseaudio date powermenu
 
 cursor-click = pointer
@@ -196,6 +200,15 @@ format = <label>
 label = ""
 label-foreground = ${colors.alert}
 
+[module/launcher]
+type = custom/script
+exec = echo ""
+interval = 3600
+click-left = $HOME/.config/rofi/launcher.sh
+format = <label>
+label = ""
+label-foreground = ${colors.primary}
+
 [settings]
 screen-change-reload = true
 pseudo-transparency = true
@@ -222,11 +235,23 @@ EOF
 # Make powermenu script executable
 chmod +x ~/.config/rofi/powermenu.sh
 
+# Create a simple rofi launcher script
+cat << 'EOF' > ~/.config/rofi/launcher.sh
+#!/bin/bash
+
+# Launch the application launcher (drun)
+rofi -show drun -theme gruvbox-dark
+
+EOF
+
+# Make launcher script executable
+chmod +x ~/.config/rofi/launcher.sh
+
 # Create Openbox autostart script
 cat << 'EOF' > ~/.config/openbox/autostart
-xfce4-clipman
-# Notif
+xfce4-clipman &
 dunst &
+picom --config ~/.config/picom/picom.conf &
 
 # Set wallpaper
 feh --bg-scale ~/.config/wallpaper/7.jpg &
