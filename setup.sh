@@ -8,7 +8,7 @@ set -e
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget unzip neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
+sudo apt-get install -y openbox curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
 
 xdg-user-dirs-update
 
@@ -335,7 +335,7 @@ chmod +x ~/.config/rofi/launcher.sh
 
 # Create Openbox autostart script
 cat << 'EOF' > ~/.config/openbox/autostart
-/usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+/usr/libexec/polkit-mate-authentication-agent-1 &
 picom --config ~/.config/picom/picom.conf &
 xfce4-clipman &
 dunst &
@@ -352,4 +352,4 @@ xsettingsd &
 EOF
 
 echo "Installation complete. Please log out and select Openbox as your session."
-echo "You may need to run lxappearance to select the Materia-dark theme manually if the gsettings command fails."
+echo "You may need to run lxappearance to select the theme manually if the gsettings command fails."
