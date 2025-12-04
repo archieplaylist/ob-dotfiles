@@ -249,9 +249,11 @@ chmod +x ~/.config/rofi/launcher.sh
 
 # Create Openbox autostart script
 cat << 'EOF' > ~/.config/openbox/autostart
+/usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
+picom --config ~/.config/picom/picom.conf &
 xfce4-clipman &
 dunst &
-picom --config ~/.config/picom/picom.conf &
+nm-applet &
 
 # Set wallpaper
 feh --bg-scale ~/.config/wallpaper/7.jpg &
