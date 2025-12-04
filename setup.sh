@@ -120,15 +120,15 @@ font-2 = "Font Awesome 6 Free:style=Solid:pixelsize=10;1"
 font-3 = "Font Awesome 6 Brands:style=Regular:pixelsize=10;1"
 
 modules-left = xwindow
-modules-right = cpu memory network pulseaudio date tray powermenu
+modules-right = tray cpu memory network pulseaudio date powermenu
 
 cursor-click = pointer
 cursor-scroll = ns-resize
 
 [module/tray]
 type = internal/tray
-format-margin = 8pt
-tray-spacing = 10pt
+format-margin = 4pt
+tray-spacing = 5pt
 ; background = ${colors.background}
 
 [module/xwindow]
@@ -189,7 +189,9 @@ label-foreground = ${colors.foreground}
 
 [module/powermenu]
 type = custom/script
-click-left = ~/.config/rofi/powermenu.sh
+exec = echo ""
+interval = 3600
+click-left = $HOME/.config/rofi/powermenu.sh
 format = <label>
 label = ""
 label-foreground = ${colors.alert}
@@ -222,6 +224,7 @@ chmod +x ~/.config/rofi/powermenu.sh
 
 # Create Openbox autostart script
 cat << 'EOF' > ~/.config/openbox/autostart
+xfce4-clipman
 # Notif
 dunst &
 
