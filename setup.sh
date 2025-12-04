@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # This script installs Openbox and some essential components on Debian-based systems.
 
 set -e
@@ -9,6 +8,10 @@ sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
 sudo apt-get install -y openbox curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
+
+# LightDM Conf
+sudo systemctl enable lightdm
+sudo sed -i '/^#\?greeter-hide-users/ { s/.*greeter-hide-users=.*/greeter-hide-users=false/; t }; /^\[Seat:\*\]/a greeter-hide-users=false' /etc/lightdm/lightdm.conf
 
 xdg-user-dirs-update
 
@@ -294,7 +297,6 @@ screen-change-reload = true
 pseudo-transparency = true
 EOF
 
-# Create powermenu script for Rofi
 # Create a robust network helper script for Polybar.
 # Uses nmcli (preferred) or iw as fallback to detect wired vs wireless
 # Prints only an icon and the IP address. When disconnected, prints icon only.
@@ -421,6 +423,8 @@ fi
 NW
 
 chmod +x ~/.config/polybar/network.sh
+
+# Create powermenu script for Rofi
 cat << 'EOF' > ~/.config/rofi/powermenu.sh
 #!/bin/bash
 
