@@ -34,7 +34,7 @@ cp -v .config/picom/*.conf ~/.config/picom/ 2>/dev/null || true
 # Copy bundled Rofi theme and config into user config
 cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
 
-# Copy bundled Polybar rrch script and make it executable
+# Copy bundled Polybar launch script and make it executable
 cp -v .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
 chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
@@ -116,7 +116,7 @@ gtk-icon-theme-name = Papirus-Dark
 gtk-font-name = Sans 9
 GTK4
 
-# Download and install Bibata cursor theme v2.0.7 (Bibata-Modern-Classic)
+# Simple: download Bibata v2.0.7, extract to ~/.icons and set as default cursor
 tmpdir=$(mktemp -d)
 echo "Downloading Bibata cursor theme to $tmpdir"
 url="https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz"
@@ -128,23 +128,12 @@ fi
 if [ -f "$tmpdir/bibata.tar.xz" ]; then
     mkdir -p "$HOME/.icons"
     tar -xJf "$tmpdir/bibata.tar.xz" -C "$tmpdir" || true
-    # The tarball should extract a directory containing the theme(s)
-    extracted_dir=$(find "$tmpdir" -maxdepth 1 -type d -name 'Bibata*' -print -quit)
-    if [ -d "$extracted_dir" ]; then
-        # Copy any theme directories found inside the extracted dir into ~/.icons
-        for theme in "$extracted_dir"/*; do
-            if [ -d "$theme" ]; then
-                echo "Installing cursor theme: $(basename "$theme")"
-                cp -r "$theme" "$HOME/.icons/" 2>/dev/null || true
-            fi
-        done
-    fi
+    # copy any extracted Bibata* directories into ~/.icons
+    find "$tmpdir" -maxdepth 1 -type d -name 'Bibata*' -exec cp -r {} "$HOME/.icons/" \; 2>/dev/null || true
 
-    # Prefer the official folder name
-    if [ -d "$HOME/.icons/Bibata-Modern-Classic" ]; then
-        cursor_name="Bibata-Modern-Classic"
-    else
-        cursor_name=$(ls -1 "$HOME/.icons" 2>/dev/null | grep -i bibata | head -n1 || ls -1 "$HOME/.icons" 2>/dev/null | head -n1 || echo "Bibata-Modern-Classic")
+    cursor_name="Bibata-Modern-Classic"
+    if [ ! -d "$HOME/.icons/$cursor_name" ]; then
+        cursor_name=$(ls -1 "$HOME/.icons" 2>/dev/null | head -n1 || echo "$cursor_name")
     fi
 
     mkdir -p "$HOME/.icons/default"
@@ -153,17 +142,33 @@ if [ -f "$tmpdir/bibata.tar.xz" ]; then
 Inherits=$cursor_name
 IDX
 
-    # Export XCURSOR_THEME in ~/.profile if not already set
-    if ! grep -q '^export XCURSOR_THEME=' "$HOME/.profile" 2>/dev/null; then
-        echo "export XCURSOR_THEME=\"$cursor_name\"" >> "$HOME/.profile"
+    # Set cursor theme for GTK2 (~/.gtkrc-2.0)
+    if [ -f "$HOME/.gtkrc-2.0" ]; then
+        if ! grep -q '^gtk-cursor-theme-name' "$HOME/.gtkrc-2.0" 2>/dev/null; then
+            printf "\ngtk-cursor-theme-name=\"%s\"\n" "$cursor_name" >> "$HOME/.gtkrc-2.0"
+        fi
+    else
+        printf "gtk-theme-name=\"Gruvbox-BL-LB-Dark\"\n" > "$HOME/.gtkrc-2.0"
+        printf "gtk-icon-theme-name=\"Papirus-Dark\"\n" >> "$HOME/.gtkrc-2.0"
+        printf "gtk-font-name=\"Sans 9\"\n" >> "$HOME/.gtkrc-2.0"
+        printf "gtk-cursor-theme-name=\"%s\"\n" "$cursor_name" >> "$HOME/.gtkrc-2.0"
     fi
 
-    # Update GTK settings to reference the cursor theme
+    # Set cursor theme for GTK3/GTK4 settings files
     for gtkfile in "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini"; do
+        mkdir -p "$(dirname "$gtkfile")"
         if [ -f "$gtkfile" ]; then
             if ! grep -q '^gtk-cursor-theme-name' "$gtkfile" 2>/dev/null; then
                 printf "\ngtk-cursor-theme-name = %s\n" "$cursor_name" >> "$gtkfile"
             fi
+        else
+            cat > "$gtkfile" <<GTKSET
+[Settings]
+gtk-theme-name = Gruvbox-BL-LB-Dark
+gtk-icon-theme-name = Papirus-Dark
+gtk-font-name = Sans 9
+gtk-cursor-theme-name = $cursor_name
+GTKSET
         fi
     done
 
@@ -239,7 +244,7 @@ label = %gb_used%
 [module/network]
 type = internal/network
 interface = enp0s3
-**interface-type = wired**
+interface-type = wired
 interval = 3.0
 format-connected-prefix = " "
 format-connected-prefix-foreground = ${colors.secondary}
