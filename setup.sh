@@ -10,6 +10,8 @@ sudo apt-get update
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
 sudo apt-get install -y openbox curl wget unzip neovim polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig
 
+xdg-user-dirs-update
+
 # Download and install Font Awesome
 wget https://github.com/FortAwesome/Font-Awesome/releases/download/6.7.2/fontawesome-free-6.7.2-desktop.zip
 unzip fontawesome-free-6.7.2-desktop.zip
@@ -145,6 +147,8 @@ label = %gb_used%
 
 [module/network]
 type = internal/network
+interface = enp0s3
+**interface-type = wired**
 interval = 3.0
 format-connected-prefix = " "
 format-connected-prefix-foreground = ${colors.secondary}
