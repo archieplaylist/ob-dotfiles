@@ -202,7 +202,7 @@ border-color = #00000000
 padding-left = 2
 padding-right = 2
 
-module-margin = 1
+module-margin = 2
 
 font-0 = fixed:pixelsize=10;1
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
@@ -242,18 +242,12 @@ format-prefix-foreground = ${colors.secondary}
 label = %gb_used%
 
 [module/network]
-type = internal/network
-interface = enp0s3
-interface-type = wired
-interval = 3.0
-format-connected-prefix = " "
-format-connected-prefix-foreground = ${colors.secondary}
-format-connected = <label-connected>
-; label-connected = %essid%
-format-disconnected = <label-disconnected>
-format-disconnected-prefix = " "
-label-disconnected = Disconnected
-label-disconnected-foreground = ${colors.foreground}
+type = custom/script
+exec = ~/.config/polybar/network.sh
+interval = 3
+format = <label>
+label = %output%
+click-right = nm-connection-editor
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -301,6 +295,132 @@ pseudo-transparency = true
 EOF
 
 # Create powermenu script for Rofi
+# Create a robust network helper script for Polybar.
+# Uses nmcli (preferred) or iw as fallback to detect wired vs wireless
+# Prints only an icon and the IP address. When disconnected, prints icon only.
+cat << 'NW' > ~/.config/polybar/network.sh
+#!/usr/bin/env bash
+
+# Icons (Font Awesome glyphs expected)
+WIFI_ICON=""
+WIRED_ICON=""
+DISCONNECTED_ICON=""
+LIMITED_ICON=""
+
+get_nmcli() {
+    # Find first connected device and its type
+    # Output: device|type|ip|ssid|conn
+    devinfo=$(nmcli -t -f DEVICE,TYPE,STATE device status 2>/dev/null | awk -F: '$3=="connected"{print $1"|"$2; exit}')
+    if [ -n "$devinfo" ]; then
+        dev=${devinfo%%|*}
+        type=${devinfo##*|}
+        ip=$(nmcli -g IP4.ADDRESS device show "$dev" 2>/dev/null | head -n1 | cut -d'/' -f1)
+        ssid=""
+        if [ "$type" = "wifi" ]; then
+            ssid=$(nmcli -t -f NAME,DEVICE connection show --active 2>/dev/null | awk -F: -v d="$dev" '$2==d{print $1; exit}')
+        fi
+        conn=$(nmcli networking connectivity 2>/dev/null || echo "")
+        echo "$dev|$type|$ip|$ssid|$conn"
+        return 0
+    fi
+    return 1
+}
+
+get_iw() {
+    # Check wireless interfaces reported by iw
+    for w in $(iw dev 2>/dev/null | awk '/Interface/{print $2}'); do
+        if iw dev "$w" link 2>/dev/null | grep -q 'Connected'; then
+            ip=$(ip -4 -o addr show dev "$w" 2>/dev/null | awk '{print $4}' | cut -d'/' -f1 | head -n1)
+            ssid=$(iw dev "$w" link 2>/dev/null | awk -F': ' '/SSID/{print $2; exit}')
+            # Best-effort connectivity check
+            conn=$(nmcli networking connectivity 2>/dev/null || echo "")
+            echo "$w|wifi|$ip|$ssid|$conn"
+            return 0
+        fi
+    done
+    return 1
+}
+
+get_route() {
+    # Fallback: use ip route to infer the device and source IP
+    read -r dev src <<< $(ip route get 1.1.1.1 2>/dev/null | awk '{for(i=1;i<=NF;i++){if($i=="dev"){dev=$(i+1)}; if($i=="src"){src=$(i+1)}}} END{print dev,src}')
+    if [ -n "$dev" ]; then
+        # If iw knows about this dev, mark as wifi
+        if command -v iw >/dev/null 2>&1 && iw dev 2>/dev/null | grep -qw "$dev"; then
+            type=wifi
+        else
+            type=ethernet
+        fi
+        # connectivity fallback: ping once
+        if ping -c1 -W1 1.1.1.1 >/dev/null 2>&1; then
+            conn=full
+        else
+            conn=limited
+        fi
+        echo "$dev|$type|$src||$conn"
+        return 0
+    fi
+    return 1
+}
+
+result=""
+if command -v nmcli >/dev/null 2>&1; then
+    result=$(get_nmcli) || true
+fi
+if [ -z "$result" ] && command -v iw >/dev/null 2>&1; then
+    result=$(get_iw) || true
+fi
+if [ -z "$result" ]; then
+    result=$(get_route) || true
+fi
+
+if [ -z "$result" ]; then
+    # no connection; show icon only
+    printf "%s" "$DISCONNECTED_ICON"
+    exit 0
+fi
+
+IFS='|' read -r iface type ipaddr ssid conn <<< "$result"
+
+# Determine icon
+if [ "$type" = "wifi" ] || [[ "$iface" == wl* ]]; then
+    icon="$WIFI_ICON"
+else
+    icon="$WIRED_ICON"
+fi
+
+# Determine connectivity indicator (use nmcli connectivity when available)
+indicator=""
+if [ -n "$conn" ] && [ "$conn" != "full" ]; then
+    indicator=" $LIMITED_ICON"
+fi
+
+# Build output: for wifi show SSID (and IP if available), for wired show IP
+if [ "$type" = "wifi" ]; then
+    if [ -n "$ssid" ]; then
+        if [ -n "$ipaddr" ]; then
+            printf "%s %s %s%s" "$icon" "$ssid" "$ipaddr" "$indicator"
+        else
+            printf "%s %s%s" "$icon" "$ssid" "$indicator"
+        fi
+    else
+        if [ -n "$ipaddr" ]; then
+            printf "%s %s%s" "$icon" "$ipaddr" "$indicator"
+        else
+            printf "%s%s" "$icon" "$indicator"
+        fi
+    fi
+else
+    if [ -n "$ipaddr" ]; then
+        printf "%s %s%s" "$icon" "$ipaddr" "$indicator"
+    else
+        printf "%s%s" "$icon" "$indicator"
+    fi
+fi
+
+NW
+
+chmod +x ~/.config/polybar/network.sh
 cat << 'EOF' > ~/.config/rofi/powermenu.sh
 #!/bin/bash
 
