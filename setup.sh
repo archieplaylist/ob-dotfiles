@@ -7,7 +7,7 @@ set -e
 sudo apt-get update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo apt-get install -y openbox curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
+sudo apt-get install -y openbox curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm xfce4-terminal xfce4-clipman lxappearance lxappearance-obconf network-manager-gnome picom mate-polkit obconf xdg-user-dirs xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulse pipewire-alsa wireplumber firefox-esr gtk2-engines-murrine sassc papirus-icon-theme rofi fontconfig libglib2.0-bin
 
 # LightDM Conf
 sudo systemctl enable lightdm
@@ -229,13 +229,10 @@ type = internal/xworkspaces
 enable-click = true
 label-active = %name%
 label-active-padding = 1
-
 label-occupied = %name%
 label-occupied-padding = 1
-
 label-urgent = %name%
 label-urgent-padding = 1
-
 label-empty = %name%
 label-empty-foreground = ${colors.disabled}
 label-empty-background = ${colors.background-alt}
