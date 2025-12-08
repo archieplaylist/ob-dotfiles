@@ -3,7 +3,7 @@ set -e
 
 # ==========================================
 # Niri + Quickshell (Bar/Launcher/Notify)
-# OS: Debian 13 (Trixie)
+# OS: Fedora
 # Theme: Dark with Blur (Semi-Transparent)
 # ==========================================
 
@@ -14,29 +14,22 @@ SRC_DIR="$USER_HOME/src"
 
 echo ">>> Target user: $TARGET_USER"
 
-echo ">>> Updating apt..."
-sudo apt update
-
-echo ">>> Installing Core Dependencies..."
+echo ">>> Installing Core Dependencies with dnf..."
 # Niri & System Utils
-sudo apt install -y wget curl git unzip xwayland pipewire wireplumber \
-    libpipewire-0.3-dev libseat-dev libdisplay-info-dev libudev-dev libinput-dev libgbm-dev \
-    libpam0g-dev libxcb-xkb-dev \
+sudo dnf install -y wget curl git unzip xwayland pipewire wireplumber \
+    zig xauth xorg-x11-server-Xorg brightnessctl \
+    pipewire-devel libseat-devel libdisplay-info-devel systemd-devel libinput-devel mesa-libgbm-devel \
+    pam-devel libxcb-devel xcb-util-xkb-devel \
     xdg-desktop-portal-gtk \
-    libxkbcommon0 libinput10 libdisplay-info2 libseat1 libglib2.0-bin \
-    swaybg alacritty fonts-jetbrains-mono
+    libxkbcommon libinput libdisplay-info libseat glib2 \
+    swaybg alacritty jetbrains-mono-fonts
 
-echo ">>> Installing Quickshell Build Dependencies (Qt6)..."
-# Debian Trixie has Qt6
-sudo apt install -y \
-    build-essential cmake ninja-build \
-    pkg-config libx11-dev libxcb1-dev libxcb-xfixes0-dev libxcb-cursor-dev libxcb-util-dev clang \
-    qt6-base-dev qt6-declarative-dev qt6-wayland-dev \
-    libwayland-dev libxkbcommon-dev libqt6svg6 \
-    libglib2.0-dev libgirepository1.0-dev libcairo2-dev libpango1.0-dev libgdk-pixbuf-xlib-2.0-dev libxml2-dev \
-    qml6-module-qtquick qml6-module-qtquick-controls \
-    qml6-module-qtquick-layouts qml6-module-qt-labs-platform
+echo ">>> Installing Quickshell from COPR..."
+sudo dnf copr enable -y errornointernet/quickshell
+sudo dnf install -y quickshell
 
+# Install Development Tools group for build-essential equivalent
+sudo dnf groupinstall -y "Development Tools"
 
 # ==========================================
 # Build & Install Ly Display Manager
@@ -46,114 +39,29 @@ if [ -d "$SRC_DIR/ly" ]; then
     echo ">>> Removing existing ly source directory..."
     rm -rf "$SRC_DIR/ly"
 fi
-echo ">>> Cloning ly into $SRC_DIR/ly"
-sudo -u "$TARGET_USER" -H git clone --recurse-submodules https://github.com/fairyglade/ly.git "$SRC_DIR/ly"
+echo ">>> Cloning ly from codeberg.org into $SRC_DIR/ly"
+sudo -u "$TARGET_USER" -H git clone --recurse-submodules https://codeberg.org/fairyglade/ly.git "$SRC_DIR/ly"
 
-echo ">>> Building and installing Ly..."
-(cd "$SRC_DIR/ly" && make && sudo make install)
+echo ">>> Building and installing Ly with Zig..."
+(cd "$SRC_DIR/ly" && zig build && sudo zig build installexe -Dinit_system=systemd)
 
-echo ">>> Enabling Ly service..."
+echo ">>> Configuring and enabling Ly service..."
+# Disable getty on tty2 to prevent conflict with Ly
+sudo systemctl disable getty@tty2.service
 sudo systemctl enable ly.service
 
 
 # ==========================================
-# 1. Install xwayland-satellite & Niri
+# 1. Install Niri and xwayland-satellite from COPR
 # ==========================================
-sudo mkdir -p /usr/local/bin
+echo ">>> Enabling yalter/niri COPR repository for niri..."
+sudo dnf copr enable -y yalter/niri
 
-echo ">>> Building xwayland-satellite from source..."
-# Ensure source dir exists
-mkdir -p "$SRC_DIR"
+echo ">>> Enabling ulysg/xwayland-satellite COPR for xwayland-satellite..."
+sudo dnf copr enable -y ulysg/xwayland-satellite
 
-# Install Rust toolchain for the target user if cargo isn't available
-if ! command -v cargo >/dev/null 2>&1; then
-    echo ">>> Cargo not found. Installing rustup for $TARGET_USER (non-interactive)..."
-    sudo -u "$TARGET_USER" -H bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' || true
-    # Add cargo to PATH for the remainder of the script when running as this user
-    export PATH="$USER_HOME/.cargo/bin:$PATH"
-fi
-
-# Clone the repository as the normal user and build
-if [ -d "$SRC_DIR/xwayland-satellite" ]; then
-    rm -rf "$SRC_DIR/xwayland-satellite"
-fi
-echo ">>> Cloning xwayland-satellite into $SRC_DIR/xwayland-satellite"
-sudo -u "$TARGET_USER" -H git clone https://github.com/Supreeeme/xwayland-satellite.git "$SRC_DIR/xwayland-satellite"
-
-echo ">>> Building (release) as $TARGET_USER..."
-sudo -u "$TARGET_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && $USER_HOME/.cargo/bin/cargo build --release" || {
-    echo ">>> ERROR: cargo build failed. You may need system packages (libx11-dev, pkg-config, etc.)."
-    echo ">>> Please inspect $SRC_DIR/xwayland-satellite and try building manually as $TARGET_USER."
-    exit 1
-}
-
-# Locate built binary
-SAT_BIN="$SRC_DIR/xwayland-satellite/target/release/xwayland-satellite"
-if [ ! -f "$SAT_BIN" ]; then
-    # Try nested target dirs (cross-compile or target triple)
-    SAT_BIN=$(find "$SRC_DIR/xwayland-satellite/target" -type f -name 'xwayland-satellite' | head -n 1 || true)
-fi
-
-if [ -z "$SAT_BIN" ] || [ ! -f "$SAT_BIN" ]; then
-    echo ">>> ERROR: built binary not found after cargo build."
-    exit 1
-fi
-
-chmod +x "$SAT_BIN"
-sudo mv "$SAT_BIN" /usr/local/bin/
-
-# ==========================================
-# Build & Install Niri from source
-# ==========================================
-echo ">>> Building Niri from source..."
-# Ensure source dir exists
-mkdir -p "$SRC_DIR"
-
-# Install Rust toolchain for the target user if cargo isn't available
-if ! command -v cargo >/dev/null 2>&1; then
-    echo ">>> Cargo not found. Installing rustup for $TARGET_USER (non-interactive)..."
-    sudo -u "$TARGET_USER" -H bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' || true
-    export PATH="$USER_HOME/.cargo/bin:$PATH"
-fi
-
-# Clone Niri and build as the target user
-if [ -d "$SRC_DIR/niri" ]; then
-    rm -rf "$SRC_DIR/niri"
-fi
-echo ">>> Cloning niri into $SRC_DIR/niri"
-sudo -u "$TARGET_USER" -H git clone https://github.com/YaLTeR/niri.git "$SRC_DIR/niri"
-
-echo ">>> Building Niri (release) as $TARGET_USER..."
-sudo -u "$TARGET_USER" -H bash -c "cd '$SRC_DIR/niri' && $USER_HOME/.cargo/bin/cargo build --release" || {
-    echo ">>> ERROR: Niri cargo build failed. You may need additional system packages." 
-    echo ">>> Please inspect $SRC_DIR/niri and try building manually as $TARGET_USER."
-    exit 1
-}
-
-# Locate built niri binary
-NIRI_BIN="$SRC_DIR/niri/target/release/niri"
-if [ ! -f "$NIRI_BIN" ]; then
-    NIRI_BIN=$(find "$SRC_DIR/niri/target" -type f -name 'niri' | head -n 1 || true)
-fi
-
-if [ -z "$NIRI_BIN" ] || [ ! -f "$NIRI_BIN" ]; then
-    echo ">>> ERROR: built Niri binary not found after cargo build."
-    exit 1
-fi
-
-chmod +x "$NIRI_BIN"
-sudo mv "$NIRI_BIN" /usr/local/bin/
-
-# Create Wayland session entry for Niri
-sudo mkdir -p /usr/share/wayland-sessions
-sudo bash -c 'cat > /usr/share/wayland-sessions/niri.desktop <<EOF
-[Desktop Entry]
-Name=Niri
-Comment=A scrollable-tiling Wayland compositor
-Exec=/usr/local/bin/niri session
-Type=Application
-DesktopNames=niri
-EOF'
+echo ">>> Installing niri and xwayland-satellite..."
+sudo dnf install -y niri xwayland-satellite
 
 
 # Create Quickshell config and write QML
