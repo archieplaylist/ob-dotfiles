@@ -31,7 +31,7 @@ sudo apt install -y \
     pkg-config libx11-dev libxcb1-dev libxcb-xfixes0-dev libxcb-cursor-dev libxcb-util-dev clang \
     qt6-base-dev qt6-declarative-dev qt6-wayland-dev \
     libwayland-dev libxkbcommon-dev libqt6svg6 \
-    libglib2.0-dev libgirepository1.0-dev libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev libxml2-dev \
+    libglib2.0-dev libgirepository1.0-dev libcairo2-dev libpango1.0-dev libgdk-pixbuf-xlib-2.0-dev libxml2-dev \
     qml6-module-qtquick qml6-module-qtquick-controls \
     qml6-module-qtquick-layouts qml6-module-qt-labs-platform
 
