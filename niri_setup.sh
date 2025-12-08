@@ -27,7 +27,7 @@ sudo dnf install -y wget curl git unzip xorg-x11-server-Xwayland pipewire wirepl
     swaybg alacritty jetbrains-mono-fonts
 
 # Install Development Tools group for C compiler needed by Ly/Zig
-sudo dnf groupinstall -y "Development Tools"
+sudo dnf group install -y "development-tools"
 
 
 # ==========================================
