@@ -57,11 +57,17 @@ if [ -z "$SAT_URL" ]; then
     done
 fi
 
-if [ -z "$SAT_URL" ]; then
-    echo ">>> ERROR: Could not determine xwayland-satellite download URL."
-    echo ">>> Please check https://github.com/Supreeeme/xwayland-satellite/releases for the correct asset name."
-    exit 1
-fi
+    if [ -z "$SAT_URL" ]; then
+        echo ">>> Trying known release tarball fallback (v0.8)..."
+        FALLBACK_TAG_URL="https://github.com/Supreeeme/xwayland-satellite/archive/refs/tags/v0.8.tar.gz"
+        if curl --head --silent --fail "$FALLBACK_TAG_URL" >/dev/null 2>&1; then
+            SAT_URL="$FALLBACK_TAG_URL"
+        else
+            echo ">>> ERROR: Could not determine xwayland-satellite download URL."
+            echo ">>> Please check https://github.com/Supreeeme/xwayland-satellite/releases for the correct asset name."
+            exit 1
+        fi
+    fi
 
 # Download to the original filename from URL
 FILE_NAME="${SAT_URL##*/}"
@@ -80,14 +86,18 @@ case "$FILE_NAME" in
         ;;
 esac
 
-if [ -z "$SAT_BIN" ]; then
-    # As a last resort, assume binary was extracted/named exactly
-    SAT_BIN="xwayland-satellite"
+if [ -z "$SAT_BIN" ] || [ ! -f "$SAT_BIN" ]; then
+    # No usable prebuilt binary found in the downloaded asset; we'll build from source
+    echo ">>> No prebuilt xwayland-satellite binary found in downloaded asset; will build from source."
+    SAT_BIN=""
+else
+    chmod +x "$SAT_BIN"
+    sudo mv "$SAT_BIN" /usr/local/bin/
+    SKIP_BUILD=1
 fi
 
-chmod +x "$SAT_BIN"
-sudo mv "$SAT_BIN" /usr/local/bin/
-
+# Only build from source if we didn't install a prebuilt binary
+if [ -z "$SKIP_BUILD" ]; then
 echo ">>> Building xwayland-satellite from source..."
 # Ensure source dir exists
 mkdir -p "$SRC_DIR"
@@ -108,7 +118,6 @@ echo ">>> Cloning xwayland-satellite into $SRC_DIR/xwayland-satellite"
 sudo -u "$SUDO_USER" -H git clone https://github.com/Supreeeme/xwayland-satellite.git "$SRC_DIR/xwayland-satellite"
 
 echo ">>> Building (release) as $SUDO_USER..."
-sudo -u "$SUDO_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && '")
 sudo -u "$SUDO_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && $USER_HOME/.cargo/bin/cargo build --release" || {
     echo ">>> ERROR: cargo build failed. You may need system packages (libx11-dev, pkg-config, etc.)."
     echo ">>> Please inspect $SRC_DIR/xwayland-satellite and try building manually as $SUDO_USER."
@@ -129,6 +138,11 @@ fi
 
 chmod +x "$SAT_BIN"
 sudo mv "$SAT_BIN" /usr/local/bin/
+fi
+
+# Create Quickshell config and write QML
+mkdir -p "$CONFIG_DIR/quickshell"
+cat > "$CONFIG_DIR/quickshell/shell.qml" <<'EOF'
 import Quickshell.Wayland
 import Quickshell.Services.SystemTray
 import Quickshell.Services.Notifications
