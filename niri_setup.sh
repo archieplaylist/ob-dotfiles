@@ -28,7 +28,7 @@ echo ">>> Installing Quickshell Build Dependencies (Qt6)..."
 # Debian Trixie has Qt6
 sudo apt install -y \
     build-essential cmake ninja-build \
-    pkg-config libx11-dev libxcb1-dev libxcb-xfixes0-dev clang \
+    pkg-config libx11-dev libxcb1-dev libxcb-xfixes0-dev libxcb-cursor-dev libxcb-util-dev clang \
     qt6-base-dev qt6-declarative-dev qt6-wayland-dev \
     libwayland-dev libxkbcommon-dev libqt6svg6 \
     qml6-module-qtquick qml6-module-qtquick-controls \
