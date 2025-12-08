@@ -25,6 +25,7 @@ echo ">>> Installing Quickshell Build Dependencies (Qt6)..."
 # Debian Trixie has Qt6
 sudo apt install -y \
     build-essential cmake ninja-build \
+    pkg-config libx11-dev libxcb1-dev libxcb-xfixes0-dev clang \
     qt6-base-dev qt6-declarative-dev qt6-wayland-dev \
     libwayland-dev libxkbcommon-dev libqt6svg6 \
     qml6-module-qtquick qml6-module-qtquick-controls \
@@ -35,69 +36,6 @@ sudo apt install -y \
 # ==========================================
 sudo mkdir -p /usr/local/bin
 
-echo ">>> Installing xwayland-satellite..."
-# Try GitHub API first and fall back to common download paths if necessary
-SAT_JSON=$(curl -s "https://api.github.com/repos/Supreeeme/xwayland-satellite/releases/latest")
-SAT_URL=$(echo "$SAT_JSON" | grep "browser_download_url" | grep -E "x86_64.*linux|x86_64-unknown-linux-musl|x86_64-unknown-linux-gnu" | cut -d '"' -f 4 | head -n 1)
-
-if [ -z "$SAT_URL" ]; then
-    echo ">>> Couldn't find asset URL via API; trying GitHub latest/download fallback..."
-    POSSIBLE_ASSETS=(
-        "xwayland-satellite-x86_64-unknown-linux-musl.tar.gz"
-        "xwayland-satellite-x86_64-unknown-linux-gnu.tar.gz"
-        "xwayland-satellite.tar.gz"
-        "xwayland-satellite"
-    )
-    for a in "${POSSIBLE_ASSETS[@]}"; do
-        FALLBACK_URL="https://github.com/Supreeeme/xwayland-satellite/releases/latest/download/$a"
-        if curl --head --silent --fail "$FALLBACK_URL" >/dev/null 2>&1; then
-            SAT_URL="$FALLBACK_URL"
-            break
-        fi
-    done
-fi
-
-    if [ -z "$SAT_URL" ]; then
-        echo ">>> Trying known release tarball fallback (v0.8)..."
-        FALLBACK_TAG_URL="https://github.com/Supreeeme/xwayland-satellite/archive/refs/tags/v0.8.tar.gz"
-        if curl --head --silent --fail "$FALLBACK_TAG_URL" >/dev/null 2>&1; then
-            SAT_URL="$FALLBACK_TAG_URL"
-        else
-            echo ">>> ERROR: Could not determine xwayland-satellite download URL."
-            echo ">>> Please check https://github.com/Supreeeme/xwayland-satellite/releases for the correct asset name."
-            exit 1
-        fi
-    fi
-
-# Download to the original filename from URL
-FILE_NAME="${SAT_URL##*/}"
-wget -O "$FILE_NAME" "$SAT_URL"
-
-# If the file is an archive, extract it; otherwise assume it's the binary
-case "$FILE_NAME" in
-    *.tar.gz|*.tgz|*.tar.xz|*.tar)
-        tar -xvf "$FILE_NAME"
-        # Try to find an executable named xwayland-satellite in extracted files
-        SAT_BIN=$(find . -maxdepth 3 -type f -name 'xwayland-satellite*' -executable | head -n 1 || true)
-        rm -f "$FILE_NAME"
-        ;;
-    *)
-        SAT_BIN="$FILE_NAME"
-        ;;
-esac
-
-if [ -z "$SAT_BIN" ] || [ ! -f "$SAT_BIN" ]; then
-    # No usable prebuilt binary found in the downloaded asset; we'll build from source
-    echo ">>> No prebuilt xwayland-satellite binary found in downloaded asset; will build from source."
-    SAT_BIN=""
-else
-    chmod +x "$SAT_BIN"
-    sudo mv "$SAT_BIN" /usr/local/bin/
-    SKIP_BUILD=1
-fi
-
-# Only build from source if we didn't install a prebuilt binary
-if [ -z "$SKIP_BUILD" ]; then
 echo ">>> Building xwayland-satellite from source..."
 # Ensure source dir exists
 mkdir -p "$SRC_DIR"
@@ -138,7 +76,6 @@ fi
 
 chmod +x "$SAT_BIN"
 sudo mv "$SAT_BIN" /usr/local/bin/
-fi
 
 # Create Quickshell config and write QML
 mkdir -p "$CONFIG_DIR/quickshell"
