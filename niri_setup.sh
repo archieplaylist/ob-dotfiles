@@ -7,9 +7,12 @@ set -e
 # Theme: Dark with Blur (Semi-Transparent)
 # ==========================================
 
-USER_HOME=$(eval echo ~$SUDO_USER)
+TARGET_USER=${SUDO_USER:-$(id -un)}
+USER_HOME=$(eval echo "~$TARGET_USER")
 CONFIG_DIR="$USER_HOME/.config"
 SRC_DIR="$USER_HOME/src"
+
+echo ">>> Target user: $TARGET_USER"
 
 echo ">>> Updating apt..."
 sudo apt update
@@ -42,8 +45,8 @@ mkdir -p "$SRC_DIR"
 
 # Install Rust toolchain for the target user if cargo isn't available
 if ! command -v cargo >/dev/null 2>&1; then
-    echo ">>> Cargo not found. Installing rustup for $SUDO_USER (non-interactive)..."
-    sudo -u "$SUDO_USER" -H bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' || true
+    echo ">>> Cargo not found. Installing rustup for $TARGET_USER (non-interactive)..."
+    sudo -u "$TARGET_USER" -H bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' || true
     # Add cargo to PATH for the remainder of the script when running as this user
     export PATH="$USER_HOME/.cargo/bin:$PATH"
 fi
@@ -53,12 +56,12 @@ if [ -d "$SRC_DIR/xwayland-satellite" ]; then
     rm -rf "$SRC_DIR/xwayland-satellite"
 fi
 echo ">>> Cloning xwayland-satellite into $SRC_DIR/xwayland-satellite"
-sudo -u "$SUDO_USER" -H git clone https://github.com/Supreeeme/xwayland-satellite.git "$SRC_DIR/xwayland-satellite"
+sudo -u "$TARGET_USER" -H git clone https://github.com/Supreeeme/xwayland-satellite.git "$SRC_DIR/xwayland-satellite"
 
-echo ">>> Building (release) as $SUDO_USER..."
-sudo -u "$SUDO_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && $USER_HOME/.cargo/bin/cargo build --release" || {
+echo ">>> Building (release) as $TARGET_USER..."
+sudo -u "$TARGET_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && $USER_HOME/.cargo/bin/cargo build --release" || {
     echo ">>> ERROR: cargo build failed. You may need system packages (libx11-dev, pkg-config, etc.)."
-    echo ">>> Please inspect $SRC_DIR/xwayland-satellite and try building manually as $SUDO_USER."
+    echo ">>> Please inspect $SRC_DIR/xwayland-satellite and try building manually as $TARGET_USER."
     exit 1
 }
 
@@ -330,7 +333,7 @@ EOF
 fi
 
 # Fix ownership
-sudo chown -R $SUDO_USER:$SUDO_USER "$USER_HOME/.config" "$USER_HOME/Pictures" "$USER_HOME/src"
+sudo chown -R "$TARGET_USER":"$TARGET_USER" "$USER_HOME/.config" "$USER_HOME/Pictures" "$USER_HOME/src"
 
 echo ""
 echo "=========================================="
