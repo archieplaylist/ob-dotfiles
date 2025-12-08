@@ -17,17 +17,14 @@ echo ">>> Target user: $TARGET_USER"
 # ==========================================
 # 1. Install Dependencies
 # ==========================================
-echo ">>> Installing Core Dependencies & Ly Build Tools..."
-# System utils and dependencies required for building Ly from source
+echo ">>> Installing Core Dependencies & LightDM..."
+# System utils and dependencies for Niri and the desktop environment
 sudo dnf install -y wget curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
-    zig xauth xorg-x11-server-Xorg brightnessctl \
-    pam-devel libxcb-devel \
+    xauth xorg-x11-server-Xorg brightnessctl \
+    lightdm lightdm-gtk \
     xdg-desktop-portal-gtk \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts
-
-# Install Development Tools group for C compiler needed by Ly/Zig
-sudo dnf group install -y "development-tools"
 
 
 # ==========================================
@@ -43,23 +40,13 @@ sudo dnf install -y niri xwayland-satellite quickshell
 
 
 # ==========================================
-# 3. Build & Install Ly Display Manager
+# 3. Configure and Enable LightDM
 # ==========================================
-echo ">>> Building Ly from source..."
-if [ -d "$SRC_DIR/ly" ]; then
-    echo ">>> Removing existing ly source directory..."
-    rm -rf "$SRC_DIR/ly"
-fi
-echo ">>> Cloning ly from codeberg.org into $SRC_DIR/ly"
-sudo -u "$TARGET_USER" -H git clone --recurse-submodules https://codeberg.org/fairyglade/ly.git "$SRC_DIR/ly"
-
-echo ">>> Building and installing Ly with Zig..."
-(cd "$SRC_DIR/ly" && zig build && sudo zig build installexe -Dinit_system=systemd)
-
-echo ">>> Configuring and enabling Ly service..."
-# Disable getty on tty2 to prevent conflict with Ly
-sudo systemctl disable getty@tty2.service
-sudo systemctl enable ly.service
+echo ">>> Enabling LightDM Display Manager..."
+# Set the default graphical target and enable the LightDM service
+sudo systemctl set-default graphical.target
+sudo systemctl enable lightdm.service
+sudo systemctl disable gdm.service || true # Disable GDM if it exists
 
 
 # ==========================================
