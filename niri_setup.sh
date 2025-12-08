@@ -20,7 +20,7 @@ sudo apt update
 echo ">>> Installing Core Dependencies..."
 # Niri & System Utils
 sudo apt install -y wget curl git unzip xwayland pipewire wireplumber \
-    libpipewire-0.3-dev libseat-dev libdisplay-info-dev libudev-dev \
+    libpipewire-0.3-dev libseat-dev libdisplay-info-dev libudev-dev libinput-dev libgbm-dev \
     xdg-desktop-portal-gtk xdg-desktop-portal-gnome \
     libxkbcommon0 libinput10 libdisplay-info2 libseat1 libglib2.0-bin \
     swaybg alacritty fonts-jetbrains-mono
