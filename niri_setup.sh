@@ -21,7 +21,8 @@ echo ">>> Installing Core Dependencies..."
 # Niri & System Utils
 sudo apt install -y wget curl git unzip xwayland pipewire wireplumber \
     libpipewire-0.3-dev libseat-dev libdisplay-info-dev libudev-dev libinput-dev libgbm-dev \
-    xdg-desktop-portal-gtk xdg-desktop-portal-gnome \
+    libpam0g-dev libxcb-xkb-dev \
+    xdg-desktop-portal-gtk \
     libxkbcommon0 libinput10 libdisplay-info2 libseat1 libglib2.0-bin \
     swaybg alacritty fonts-jetbrains-mono
 
@@ -35,6 +36,25 @@ sudo apt install -y \
     libglib2.0-dev libgirepository1.0-dev libcairo2-dev libpango1.0-dev libgdk-pixbuf-xlib-2.0-dev libxml2-dev \
     qml6-module-qtquick qml6-module-qtquick-controls \
     qml6-module-qtquick-layouts qml6-module-qt-labs-platform
+
+
+# ==========================================
+# Build & Install Ly Display Manager
+# ==========================================
+echo ">>> Building Ly from source..."
+if [ -d "$SRC_DIR/ly" ]; then
+    echo ">>> Removing existing ly source directory..."
+    rm -rf "$SRC_DIR/ly"
+fi
+echo ">>> Cloning ly into $SRC_DIR/ly"
+sudo -u "$TARGET_USER" -H git clone --recurse-submodules https://github.com/fairyglade/ly.git "$SRC_DIR/ly"
+
+echo ">>> Building and installing Ly..."
+(cd "$SRC_DIR/ly" && make && sudo make install)
+
+echo ">>> Enabling Ly service..."
+sudo systemctl enable ly.service
+
 
 # ==========================================
 # 1. Install xwayland-satellite & Niri
