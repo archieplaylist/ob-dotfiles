@@ -80,6 +80,60 @@ fi
 chmod +x "$SAT_BIN"
 sudo mv "$SAT_BIN" /usr/local/bin/
 
+# ==========================================
+# Build & Install Niri from source
+# ==========================================
+echo ">>> Building Niri from source..."
+# Ensure source dir exists
+mkdir -p "$SRC_DIR"
+
+# Install Rust toolchain for the target user if cargo isn't available
+if ! command -v cargo >/dev/null 2>&1; then
+    echo ">>> Cargo not found. Installing rustup for $TARGET_USER (non-interactive)..."
+    sudo -u "$TARGET_USER" -H bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' || true
+    export PATH="$USER_HOME/.cargo/bin:$PATH"
+fi
+
+# Clone Niri and build as the target user
+if [ -d "$SRC_DIR/niri" ]; then
+    rm -rf "$SRC_DIR/niri"
+fi
+echo ">>> Cloning niri into $SRC_DIR/niri"
+sudo -u "$TARGET_USER" -H git clone https://github.com/YaLTeR/niri.git "$SRC_DIR/niri"
+
+echo ">>> Building Niri (release) as $TARGET_USER..."
+sudo -u "$TARGET_USER" -H bash -c "cd '$SRC_DIR/niri' && $USER_HOME/.cargo/bin/cargo build --release" || {
+    echo ">>> ERROR: Niri cargo build failed. You may need additional system packages." 
+    echo ">>> Please inspect $SRC_DIR/niri and try building manually as $TARGET_USER."
+    exit 1
+}
+
+# Locate built niri binary
+NIRI_BIN="$SRC_DIR/niri/target/release/niri"
+if [ ! -f "$NIRI_BIN" ]; then
+    NIRI_BIN=$(find "$SRC_DIR/niri/target" -type f -name 'niri' | head -n 1 || true)
+fi
+
+if [ -z "$NIRI_BIN" ] || [ ! -f "$NIRI_BIN" ]; then
+    echo ">>> ERROR: built Niri binary not found after cargo build."
+    exit 1
+fi
+
+chmod +x "$NIRI_BIN"
+sudo mv "$NIRI_BIN" /usr/local/bin/
+
+# Create Wayland session entry for Niri
+sudo mkdir -p /usr/share/wayland-sessions
+sudo bash -c 'cat > /usr/share/wayland-sessions/niri.desktop <<EOF
+[Desktop Entry]
+Name=Niri
+Comment=A scrollable-tiling Wayland compositor
+Exec=/usr/local/bin/niri session
+Type=Application
+DesktopNames=niri
+EOF'
+
+
 # Create Quickshell config and write QML
 mkdir -p "$CONFIG_DIR/quickshell"
 cat > "$CONFIG_DIR/quickshell/shell.qml" <<'EOF'
