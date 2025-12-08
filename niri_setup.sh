@@ -28,8 +28,7 @@ sudo apt install -y \
     qt6-base-dev qt6-declarative-dev qt6-wayland-dev \
     libwayland-dev libxkbcommon-dev libqt6svg6 \
     qml6-module-qtquick qml6-module-qtquick-controls \
-    qml6-module-qtquick-layouts qml6-module-qt-labs-platform \
-    qt6-quick-controls2-dev
+    qml6-module-qtquick-layouts qml6-module-qt-labs-platform
 
 # ==========================================
 # 1. Install xwayland-satellite & Niri
