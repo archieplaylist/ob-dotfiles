@@ -88,57 +88,47 @@ fi
 chmod +x "$SAT_BIN"
 sudo mv "$SAT_BIN" /usr/local/bin/
 
-echo ">>> Installing Niri..."
-NIRI_JSON=$(curl -s https://api.github.com/repos/YaLTeR/niri/releases/latest)
-NIRI_URL=$(echo "$NIRI_JSON" | grep "browser_download_url" | grep "niri-x86_64-unknown-linux-gnu" | cut -d '"' -f 4 | head -n 1)
-wget -O niri "$NIRI_URL"
-chmod +x niri
-sudo mv niri /usr/local/bin/
-
-# Session Entry
-sudo mkdir -p /usr/share/wayland-sessions
-sudo bash -c 'cat > /usr/share/wayland-sessions/niri.desktop <<EOF
-[Desktop Entry]
-Name=Niri
-Comment=A scrollable-tiling Wayland compositor
-Exec=/usr/local/bin/niri session
-Type=Application
-DesktopNames=niri
-EOF'
-
-# ==========================================
-# 2. Build & Install Quickshell
-# ==========================================
-echo ">>> Building Quickshell from source..."
-
+echo ">>> Building xwayland-satellite from source..."
+# Ensure source dir exists
 mkdir -p "$SRC_DIR"
-if [ -d "$SRC_DIR/quickshell" ]; then
-    rm -rf "$SRC_DIR/quickshell"
+
+# Install Rust toolchain for the target user if cargo isn't available
+if ! command -v cargo >/dev/null 2>&1; then
+    echo ">>> Cargo not found. Installing rustup for $SUDO_USER (non-interactive)..."
+    sudo -u "$SUDO_USER" -H bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' || true
+    # Add cargo to PATH for the remainder of the script when running as this user
+    export PATH="$USER_HOME/.cargo/bin:$PATH"
 fi
 
-git clone https://git.outfoxxed.me/outfoxxed/quickshell "$SRC_DIR/quickshell"
-cd "$SRC_DIR/quickshell"
+# Clone the repository as the normal user and build
+if [ -d "$SRC_DIR/xwayland-satellite" ]; then
+    rm -rf "$SRC_DIR/xwayland-satellite"
+fi
+echo ">>> Cloning xwayland-satellite into $SRC_DIR/xwayland-satellite"
+sudo -u "$SUDO_USER" -H git clone https://github.com/Supreeeme/xwayland-satellite.git "$SRC_DIR/xwayland-satellite"
 
-# Configure and Build
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+echo ">>> Building (release) as $SUDO_USER..."
+sudo -u "$SUDO_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && '")
+sudo -u "$SUDO_USER" -H bash -c "cd '$SRC_DIR/xwayland-satellite' && $USER_HOME/.cargo/bin/cargo build --release" || {
+    echo ">>> ERROR: cargo build failed. You may need system packages (libx11-dev, pkg-config, etc.)."
+    echo ">>> Please inspect $SRC_DIR/xwayland-satellite and try building manually as $SUDO_USER."
+    exit 1
+}
 
-# Install
-sudo cmake --install build
+# Locate built binary
+SAT_BIN="$SRC_DIR/xwayland-satellite/target/release/xwayland-satellite"
+if [ ! -f "$SAT_BIN" ]; then
+    # Try nested target dirs (cross-compile or target triple)
+    SAT_BIN=$(find "$SRC_DIR/xwayland-satellite/target" -type f -name 'xwayland-satellite' | head -n 1 || true)
+fi
 
-echo ">>> Quickshell installed successfully."
+if [ -z "$SAT_BIN" ] || [ ! -f "$SAT_BIN" ]; then
+    echo ">>> ERROR: built binary not found after cargo build."
+    exit 1
+fi
 
-# ==========================================
-# 3. Create Quickshell Configuration (QML)
-# ==========================================
-# This QML implements a Bar, a Launcher Menu, and Notifications.
-
-mkdir -p "$CONFIG_DIR/quickshell"
-cat > "$CONFIG_DIR/quickshell/shell.qml" <<EOF
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import Quickshell
+chmod +x "$SAT_BIN"
+sudo mv "$SAT_BIN" /usr/local/bin/
 import Quickshell.Wayland
 import Quickshell.Services.SystemTray
 import Quickshell.Services.Notifications
