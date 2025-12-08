@@ -14,25 +14,36 @@ SRC_DIR="$USER_HOME/src"
 
 echo ">>> Target user: $TARGET_USER"
 
-echo ">>> Installing Core Dependencies with dnf..."
-# Niri & System Utils
+# ==========================================
+# 1. Install Dependencies
+# ==========================================
+echo ">>> Installing Core Dependencies & Ly Build Tools..."
+# System utils and dependencies required for building Ly from source
 sudo dnf install -y wget curl git unzip xwayland pipewire wireplumber \
     zig xauth xorg-x11-server-Xorg brightnessctl \
-    pipewire-devel libseat-devel libdisplay-info-devel systemd-devel libinput-devel mesa-libgbm-devel \
-    pam-devel libxcb-devel xcb-util-xkb-devel \
+    pam-devel \
     xdg-desktop-portal-gtk \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts
 
-echo ">>> Installing Quickshell from COPR..."
-sudo dnf copr enable -y errornointernet/quickshell
-sudo dnf install -y quickshell
-
-# Install Development Tools group for build-essential equivalent
+# Install Development Tools group for C compiler needed by Ly/Zig
 sudo dnf groupinstall -y "Development Tools"
 
+
 # ==========================================
-# Build & Install Ly Display Manager
+# 2. Enable COPR Repositories & Install Software
+# ==========================================
+echo ">>> Enabling COPR repositories..."
+sudo dnf copr enable -y yalter/niri
+sudo dnf copr enable -y ulysg/xwayland-satellite
+sudo dnf copr enable -y errornointernet/quickshell
+
+echo ">>> Installing Niri, XWayland-Satellite, and Quickshell..."
+sudo dnf install -y niri xwayland-satellite quickshell
+
+
+# ==========================================
+# 3. Build & Install Ly Display Manager
 # ==========================================
 echo ">>> Building Ly from source..."
 if [ -d "$SRC_DIR/ly" ]; then
@@ -52,17 +63,8 @@ sudo systemctl enable ly.service
 
 
 # ==========================================
-# 1. Install Niri and xwayland-satellite from COPR
+# 4. Configuration
 # ==========================================
-echo ">>> Enabling yalter/niri COPR repository for niri..."
-sudo dnf copr enable -y yalter/niri
-
-echo ">>> Enabling ulysg/xwayland-satellite COPR for xwayland-satellite..."
-sudo dnf copr enable -y ulysg/xwayland-satellite
-
-echo ">>> Installing niri and xwayland-satellite..."
-sudo dnf install -y niri xwayland-satellite
-
 
 # Create Quickshell config and write QML
 mkdir -p "$CONFIG_DIR/quickshell"
@@ -266,9 +268,7 @@ ShellRoot {
 }
 EOF
 
-# ==========================================
-# 4. Final Niri Config
-# ==========================================
+# Final Niri Config
 mkdir -p "$CONFIG_DIR/niri"
 NIRI_CONFIG="$CONFIG_DIR/niri/config.kdl"
 
