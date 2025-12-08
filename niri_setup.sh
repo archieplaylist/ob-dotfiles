@@ -21,7 +21,7 @@ echo ">>> Installing Core Dependencies & Ly Build Tools..."
 # System utils and dependencies required for building Ly from source
 sudo dnf install -y wget curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
     zig xauth xorg-x11-server-Xorg brightnessctl \
-    pam-devel \
+    pam-devel libxcb-devel \
     xdg-desktop-portal-gtk \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts
