@@ -18,7 +18,7 @@ echo ">>> Installing Core Dependencies..."
 # Niri & System Utils
 sudo apt install -y wget curl git unzip xwayland pipewire wireplumber \
     xdg-desktop-portal-gtk xdg-desktop-portal-gnome \
-    libxkbcommon0 libinput10 libdisplay-info1 libseat1 libglib2.0-bin \
+    libxkbcommon0 libinput10 libdisplay-info2 libseat1 libglib2.0-bin \
     swaybg alacritty fonts-jetbrains-mono
 
 echo ">>> Installing Quickshell Build Dependencies (Qt6)..."
@@ -37,12 +37,57 @@ sudo apt install -y \
 sudo mkdir -p /usr/local/bin
 
 echo ">>> Installing xwayland-satellite..."
-SAT_URL=$(curl -s https://api.github.com/repos/Supreeeme/xwayland-satellite/releases/latest | grep "browser_download_url" | grep "x86_64-unknown-linux-musl" | cut -d '"' -f 4)
-wget -O xwayland-satellite.tar.gz "$SAT_URL"
-tar -xzf xwayland-satellite.tar.gz
-chmod +x xwayland-satellite
-sudo mv xwayland-satellite /usr/local/bin/
-rm xwayland-satellite.tar.gz
+# Try GitHub API first and fall back to common download paths if necessary
+SAT_JSON=$(curl -s "https://api.github.com/repos/Supreeeme/xwayland-satellite/releases/latest")
+SAT_URL=$(echo "$SAT_JSON" | grep "browser_download_url" | grep -E "x86_64.*linux|x86_64-unknown-linux-musl|x86_64-unknown-linux-gnu" | cut -d '"' -f 4 | head -n 1)
+
+if [ -z "$SAT_URL" ]; then
+    echo ">>> Couldn't find asset URL via API; trying GitHub latest/download fallback..."
+    POSSIBLE_ASSETS=(
+        "xwayland-satellite-x86_64-unknown-linux-musl.tar.gz"
+        "xwayland-satellite-x86_64-unknown-linux-gnu.tar.gz"
+        "xwayland-satellite.tar.gz"
+        "xwayland-satellite"
+    )
+    for a in "${POSSIBLE_ASSETS[@]}"; do
+        FALLBACK_URL="https://github.com/Supreeeme/xwayland-satellite/releases/latest/download/$a"
+        if curl --head --silent --fail "$FALLBACK_URL" >/dev/null 2>&1; then
+            SAT_URL="$FALLBACK_URL"
+            break
+        fi
+    done
+fi
+
+if [ -z "$SAT_URL" ]; then
+    echo ">>> ERROR: Could not determine xwayland-satellite download URL."
+    echo ">>> Please check https://github.com/Supreeeme/xwayland-satellite/releases for the correct asset name."
+    exit 1
+fi
+
+# Download to the original filename from URL
+FILE_NAME="${SAT_URL##*/}"
+wget -O "$FILE_NAME" "$SAT_URL"
+
+# If the file is an archive, extract it; otherwise assume it's the binary
+case "$FILE_NAME" in
+    *.tar.gz|*.tgz|*.tar.xz|*.tar)
+        tar -xvf "$FILE_NAME"
+        # Try to find an executable named xwayland-satellite in extracted files
+        SAT_BIN=$(find . -maxdepth 3 -type f -name 'xwayland-satellite*' -executable | head -n 1 || true)
+        rm -f "$FILE_NAME"
+        ;;
+    *)
+        SAT_BIN="$FILE_NAME"
+        ;;
+esac
+
+if [ -z "$SAT_BIN" ]; then
+    # As a last resort, assume binary was extracted/named exactly
+    SAT_BIN="xwayland-satellite"
+fi
+
+chmod +x "$SAT_BIN"
+sudo mv "$SAT_BIN" /usr/local/bin/
 
 echo ">>> Installing Niri..."
 NIRI_JSON=$(curl -s https://api.github.com/repos/YaLTeR/niri/releases/latest)
