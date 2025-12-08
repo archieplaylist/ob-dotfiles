@@ -56,22 +56,28 @@ sudo systemctl disable gdm.service || true # Disable GDM if it exists
 # Create Quickshell config and write QML
 mkdir -p "$CONFIG_DIR/quickshell"
 cat > "$CONFIG_DIR/quickshell/shell.qml" <<'EOF'
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+
+import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.SystemTray
 import Quickshell.Services.Notifications
 
 ShellRoot {
+    id: **rootShell** // <-- FIX 1: Added ID for explicit anchoring
+
     // --- 1. Notification Server (Replaces Mako) ---
     // This listens for system notifications and displays a popup
     NotificationServer {
         id: notifServer
-        running: true
     }
 
     // A list of active notifications to display
     ColumnLayout {
-        anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.right: **rootShell**.right // <-- FIX 2: Anchor to rootShell instead of parent
+        anchors.top: **rootShell**.top     // <-- FIX 2: Anchor to rootShell instead of parent
         anchors.margins: 10
         anchors.topMargin: 50 // Below bar
         spacing: 10
@@ -92,7 +98,7 @@ ShellRoot {
                     anchors.fill: parent
                     anchors.margins: 10
                     Image {
-                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/check.png"
+                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/bell.png" // Added default icon
                         Layout.preferredWidth: 32
                         Layout.preferredHeight: 32
                         fillMode: Image.PreserveAspectFit
@@ -128,12 +134,15 @@ ShellRoot {
             left: true
             right: true
         }
-        height: 40
+        // height: 40 // WARN: Keeping for now, but implicitHeight is preferred in layouts
         color: "#cc141414" // Dark with transparency (Blur simulation)
 
         // Make sure it reserves space
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.exclusiveZone: 40
+        
+        // Define height using Layout to satisfy layout managers
+        Layout.preferredHeight: 40 // Suggested to help layout management
 
         RowLayout {
             anchors.fill: parent
@@ -175,7 +184,8 @@ ShellRoot {
                 Repeater {
                     model: SystemTray.items
                     delegate: Image {
-                        source: model.icon
+                        // <-- FIX 4: Added a fallback source to prevent QUrl assignment error
+                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/menu_icon.png"
                         width: 20; height: 20
                         MouseArea {
                             anchors.fill: parent
@@ -189,15 +199,16 @@ ShellRoot {
 
     // --- 3. Launcher Popup (Replaces Fuzzel) ---
     // A simple grid of favorites. 
-    // (Note: Full app list parsing requires C++ or complex JS parsing of .desktop files)
     PopupWindow {
         id: launcherPopup
         visible: false
-        width: 400
-        height: 300
-        anchor.window: parent
-        // anchor.rect not fully supported in all compositors, centering manually often safer
-        // Simple centering simulation or top-left offset
+        
+        // FIX 3: Use Layout properties (or remove them if you keep width/height)
+        // If the popup is not a layout item, width/height is correct, but the WARNs suggest using:
+        Layout.implicitWidth: 400
+        Layout.implicitHeight: 300
+
+        anchor.window: **rootShell** // <-- FIX 3: Anchor to rootShell instead of parent
         
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
@@ -225,7 +236,7 @@ ShellRoot {
                     
                     // Helper Component for App Buttons
                     component AppBtn: Button {
-                        property string cmd
+                        property string cmd: "" // <-- FIX 5: Ensure cmd has a default value to prevent QString error
                         property string label
                         Layout.preferredWidth: 110
                         Layout.preferredHeight: 80
