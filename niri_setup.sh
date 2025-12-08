@@ -19,7 +19,7 @@ echo ">>> Target user: $TARGET_USER"
 # ==========================================
 echo ">>> Installing Core Dependencies & Ly Build Tools..."
 # System utils and dependencies required for building Ly from source
-sudo dnf install -y wget curl git unzip xwayland pipewire wireplumber \
+sudo dnf install -y wget curl git unzip xorg-x11-server-xwayland pipewire wireplumber \
     zig xauth xorg-x11-server-Xorg brightnessctl \
     pam-devel \
     xdg-desktop-portal-gtk \
