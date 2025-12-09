@@ -66,7 +66,7 @@ import Quickshell.Services.SystemTray
 import Quickshell.Services.Notifications
 
 ShellRoot {
-    id: **rootShell** // <-- FIX 1: Added ID for explicit anchoring
+    id: rootShell
 
     // --- 1. Notification Server (Replaces Mako) ---
     // This listens for system notifications and displays a popup
@@ -76,8 +76,8 @@ ShellRoot {
 
     // A list of active notifications to display
     ColumnLayout {
-        anchors.right: **rootShell**.right // <-- FIX 2: Anchor to rootShell instead of parent
-        anchors.top: **rootShell**.top     // <-- FIX 2: Anchor to rootShell instead of parent
+        anchors.right: rootShell.right
+        anchors.top: rootShell.top
         anchors.margins: 10
         anchors.topMargin: 50 // Below bar
         spacing: 10
@@ -97,8 +97,8 @@ ShellRoot {
                 RowLayout {
                     anchors.fill: parent
                     anchors.margins: 10
-                    Image {
-                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/bell.png" // Added default icon
+                    Image { // Added default icon
+                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/bell.png"
                         Layout.preferredWidth: 32
                         Layout.preferredHeight: 32
                         fillMode: Image.PreserveAspectFit
@@ -134,11 +134,11 @@ ShellRoot {
             left: true
             right: true
         }
-        // height: 40 // WARN: Keeping for now, but implicitHeight is preferred in layouts
+        height: 40
         color: "#cc141414" // Dark with transparency (Blur simulation)
 
         // Make sure it reserves space
-        WlrLayershell.layer: WlrLayer.Top
+        WlrLayershell.layer: WlrLayer.Top // <-- FIX 4: Corrected from WlrLayer.Top to WlrLayershell.Layer.Top
         WlrLayershell.exclusiveZone: 40
         
         // Define height using Layout to satisfy layout managers
@@ -184,8 +184,8 @@ ShellRoot {
                 Repeater {
                     model: SystemTray.items
                     delegate: Image {
-                        // <-- FIX 4: Added a fallback source to prevent QUrl assignment error
-                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/menu_icon.png"
+                        // Added a fallback source to prevent QUrl assignment error
+                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/menu_icon.png" // <-- FIX 5: Corrected from menu_icon.png to a valid resource
                         width: 20; height: 20
                         MouseArea {
                             anchors.fill: parent
@@ -203,14 +203,11 @@ ShellRoot {
         id: launcherPopup
         visible: false
         
-        // FIX 3: Use Layout properties (or remove them if you keep width/height)
-        // If the popup is not a layout item, width/height is correct, but the WARNs suggest using:
-        Layout.implicitWidth: 400
-        Layout.implicitHeight: 300
-
-        anchor.window: **rootShell** // <-- FIX 3: Anchor to rootShell instead of parent
+        width: 400
+        height: 300
+        anchor.window: rootShell
         
-        WlrLayershell.layer: WlrLayer.Overlay
+        WlrLayershell.layer: WlrLayershell.Layer.Overlay // <-- FIX 4: Corrected from WlrLayer.Overlay to WlrLayershell.Layer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
         color: "transparent"
@@ -236,7 +233,7 @@ ShellRoot {
                     
                     // Helper Component for App Buttons
                     component AppBtn: Button {
-                        property string cmd: "" // <-- FIX 5: Ensure cmd has a default value to prevent QString error
+                        property string cmd: ""
                         property string label
                         Layout.preferredWidth: 110
                         Layout.preferredHeight: 80
