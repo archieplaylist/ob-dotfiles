@@ -33,7 +33,7 @@ sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire 
 # ==========================================
 echo ">>> Enabling COPR repositories..."
 for repo in "yalter/niri" "ulysg/xwayland-satellite" "errornointernet/quickshell"; do
-    repo_file="_copr_$(echo "$repo" | tr '/' '-').repo"
+    repo_file="_copr:copr.fedorainfracloud.org:$(echo "$repo" | tr '/' ':').repo"
     if [ ! -f "/etc/yum.repos.d/$repo_file" ]; then
         echo "Enabling copr repo $repo..."
         sudo dnf copr enable -y "$repo"
