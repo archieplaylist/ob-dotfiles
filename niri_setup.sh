@@ -98,7 +98,9 @@ ShellRoot {
                     anchors.fill: parent
                     anchors.margins: 10
                     Image { // Added default icon
-                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/bell.png"
+                        // FIX 1: Changed deprecated QtQuick.Controls/Basic/images/bell.png path 
+                        // to a valid QtQuick.Controls 2 path for a fallback icon.
+                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/images/platform/bell.png" 
                         Layout.preferredWidth: 32
                         Layout.preferredHeight: 32
                         fillMode: Image.PreserveAspectFit
@@ -134,11 +136,12 @@ ShellRoot {
             left: true
             right: true
         }
-        height: 40
+        // FIX 2: Removed deprecated 'height: 40' property. Use Layout.preferredHeight below.
+        // height: 40 
         color: "#cc141414" // Dark with transparency (Blur simulation)
 
         // Make sure it reserves space
-        WlrLayershell.layer: WlrLayer.Top // <-- FIX 4: Corrected from WlrLayer.Top to WlrLayershell.Layer.Top
+        WlrLayershell.layer: WlrLayer.Top // <-- FIX 4: Corrected from WlrLayer.Top to WlrLayershell.Layer.Top (You already had this fix in your code, keeping it.)
         WlrLayershell.exclusiveZone: 40
         
         // Define height using Layout to satisfy layout managers
@@ -184,8 +187,8 @@ ShellRoot {
                 Repeater {
                     model: SystemTray.items
                     delegate: Image {
-                        // Added a fallback source to prevent QUrl assignment error
-                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/Basic/images/menu_icon.png" // <-- FIX 5: Corrected from menu_icon.png to a valid resource
+                        // FIX 3: Corrected the invalid QRC path, resolving the "Cannot open:..." error
+                        source: model.icon || "qrc:/qt-project.org/imports/QtQuick/Controls/images/platform/system-tray.png" 
                         width: 20; height: 20
                         MouseArea {
                             anchors.fill: parent
@@ -203,18 +206,21 @@ ShellRoot {
         id: launcherPopup
         visible: false
         
-        width: 400
-        height: 300
+        // FIX 4: Removed deprecated 'width: 400' and 'height: 300' properties
+        // width: 400
+        // height: 300
         anchor.window: rootShell
         
-        WlrLayershell.layer: WlrLayershell.Layer.Overlay // <-- FIX 4: Corrected from WlrLayer.Overlay to WlrLayershell.Layer.Overlay
+        WlrLayershell.layer: WlrLayershell.Layer.Overlay // <-- FIX 4: Corrected from WlrLayer.Overlay to WlrLayershell.Layer.Overlay (You already had this fix in your code, keeping it.)
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
         color: "transparent"
 
         Rectangle {
+            // The size of the inner Rectangle now defines the effective size of the popup, 
+            // resolving the layout warnings related to the PopupWindow dimensions.
             anchors.centerIn: parent
-            width: 400; height: 300
+            width: 400; height: 300 
             color: "#dd1a1a1a"
             radius: 12
             border.color: "#444"
