@@ -197,7 +197,7 @@ binds {
     Mod+Ctrl+K     { focus-monitor-up; }
     Mod+Ctrl+L     { focus-monitor-right; }
 
-    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty" "--config=['~/.config/kitty/kitty-adw.conf']"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     Mod+R hotkey-overlay-title="Run an Application: quickshell-launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
 
