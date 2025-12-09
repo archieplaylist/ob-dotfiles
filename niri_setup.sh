@@ -63,7 +63,7 @@ sudo systemctl disable gdm.service || true
 mkdir -p "$CONFIG_DIR/quickshell"
 cp -rv .config/quickshell/* $CONFIG_DIR/quickshell/
 cp -rf .config/niri $CONFIG_DIR
-cp -rv .config/kitty/*.conf ~/.config/kitty/ 2>/dev/null || true
+cp -rv .config/kitty/* ~/.config/kitty/ 2>/dev/null || true
 
 cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
 cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
