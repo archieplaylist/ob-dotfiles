@@ -23,7 +23,7 @@ sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire 
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
     xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
-    adwaita-gtk2-theme adwaita-cursor-theme adw-gt3-theme \
+    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme adw-gtk3-theme \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts qt6-qt5compat
 
