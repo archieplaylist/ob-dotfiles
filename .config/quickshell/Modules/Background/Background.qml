@@ -23,7 +23,7 @@ Variants {
         Image {
             anchors.fill: parent
             fillMode: Image.PreserveAspectCrop
-            source: Qt.resolvedUrl(Quickshell.shellPath("assets/wallpapers/bay.JPG"))
+            source: Qt.resolvedUrl(Quickshell.shellPath("assets/wallpapers/7.jpg"))
         }
 
         BackgroundClock {
