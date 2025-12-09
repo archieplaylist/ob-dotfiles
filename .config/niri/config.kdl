@@ -199,8 +199,6 @@ binds {
 
     Mod+D              { focus-workspace-down; }
     Mod+U              { focus-workspace-up; }
-    Mod+Shift+D         { move-column-to-workspace-down; }
-    Mod+Shift+U         { move-column-to-workspace-up; }
 
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
