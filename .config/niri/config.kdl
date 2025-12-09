@@ -107,7 +107,7 @@ hotkey-overlay {
 
 spawn-at-startup "quickshell"
 spawn-at-startup "xwayland-satellite"
-spawn-at-startup "swaybg" "-m" "fill" "-i" "~/.config/wallpaper/7.jpg"
+spawn-sh-at-startup "~/.config/wallpaper/run.sh"
 
 spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 
