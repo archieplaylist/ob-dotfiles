@@ -23,7 +23,7 @@ sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire 
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
     xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
-    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme adw-gtk3-theme \
+    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme adw-gtk3-theme kvantum \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts qt6-qt5compat
 
@@ -32,9 +32,15 @@ sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire 
 # 2. Enable COPR Repositories & Install Software
 # ==========================================
 echo ">>> Enabling COPR repositories..."
-sudo dnf copr enable -y yalter/niri
-sudo dnf copr enable -y ulysg/xwayland-satellite
-sudo dnf copr enable -y errornointernet/quickshell
+for repo in "yalter/niri" "ulysg/xwayland-satellite" "errornointernet/quickshell"; do
+    repo_file="_copr_$(echo "$repo" | tr '/' '-').repo"
+    if [ ! -f "/etc/yum.repos.d/$repo_file" ]; then
+        echo "Enabling copr repo $repo..."
+        sudo dnf copr enable -y "$repo"
+    else
+        echo "Copr repo $repo already enabled, skipping."
+    fi
+done
 
 echo ">>> Installing Niri, XWayland-Satellite, and Quickshell..."
 sudo dnf install -y niri xwayland-satellite quickshell
@@ -63,6 +69,14 @@ cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
 cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
 cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
 cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
+
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+
+# Kvantum theme
+mkdir -p ~/.config/Kvantum
+touch ~/.config/Kvantum/kvantum.kvconfig
+sed -i '/^\[General\]$/,/^\[.*\]$/ s/^theme=.*/theme=KvGnomeDark/' ~/.config/Kvantum/kvantum.kvconfig
 
 # Fix ownership
 sudo chown -R "$TARGET_USER":"$TARGET_USER" "$USER_HOME/.config" "$USER_HOME/Pictures" "$USER_HOME/src"
