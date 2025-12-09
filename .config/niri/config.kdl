@@ -70,19 +70,17 @@ input {
 }
 
 layout {
-    gaps 5
+    gaps 10
 
-    center-focused-column "never"
-
-    preset-column-widths {
-        proportion 0.5
-        proportion 1.0
-    }
-
-    default-column-width { proportion 1.0; }
+    // center-focused-column "never"
+    // preset-column-widths {
+    //     proportion 0.5
+    //     proportion 1.0
+    // }
+    // default-column-width { proportion 1.0; }
 
     focus-ring {
-        width 3
+        width 1
         active-color "#ebbcba"
         inactive-color "transparent"
     }
@@ -109,7 +107,9 @@ hotkey-overlay {
 
 spawn-at-startup "quickshell"
 spawn-at-startup "xwayland-satellite"
-spawn-at-startup "swaybg" "-m" "fill" "-i" "~/Pictures/Wallpapers/dark.jpg"
+spawn-at-startup "swaybg" "-m" "fill" "-i" "~/.config/wallpaper/7.jpg"
+
+spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 
 prefer-no-csd
 
@@ -197,13 +197,11 @@ binds {
     Mod+Ctrl+K     { focus-monitor-up; }
     Mod+Ctrl+L     { focus-monitor-right; }
 
-    Mod+D              { focus-workspace-down; }
-    Mod+U              { focus-workspace-up; }
-
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "kitty"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     Mod+R hotkey-overlay-title="Run an Application: quickshell-launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
-    Super+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+
+    Super+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock" { spawn "~/.config/niri/lockscreen.sh"; }
 
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.

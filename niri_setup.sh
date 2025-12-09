@@ -22,7 +22,8 @@ echo ">>> Installing Core Dependencies & LightDM..."
 sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
-    xdg-desktop-portal-gtk \
+    xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
+    adwaita-gtk2-theme adwaita-cursor-theme adw-gt3-theme \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts qt6-qt5compat
 
@@ -56,11 +57,12 @@ sudo systemctl disable gdm.service || true
 mkdir -p "$CONFIG_DIR/quickshell"
 cp -rv .config/quickshell/* $CONFIG_DIR/quickshell/
 cp -rf .config/niri $CONFIG_DIR
+cp -rv .config/kitty/*.conf ~/.config/kitty/ 2>/dev/null || true
 
-# Ensure Wallpaper directory exists
-mkdir -p "$USER_HOME/Pictures/Wallpapers"
-wget -nc -O "$USER_HOME/Pictures/Wallpapers/dark.jpg" "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2074&auto=format&fit=crop"
-
+cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
+cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
+cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
+cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
 
 # Fix ownership
 sudo chown -R "$TARGET_USER":"$TARGET_USER" "$USER_HOME/.config" "$USER_HOME/Pictures" "$USER_HOME/src"
