@@ -68,6 +68,7 @@ cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
 cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
 cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
 cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
+cp -rv .config/waybar ~/.config/ 2>/dev/null || true
 
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
