@@ -136,6 +136,10 @@ window-rule {
     clip-to-geometry true
 }
 
+workspace "cli"
+workspace "web"
+workspace "dev"
+
 binds {
     Mod+E { show-hotkey-overlay; }
     Mod+O { toggle-overview; }
@@ -155,10 +159,6 @@ binds {
     Mod+End  { focus-column-last; }
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
-
-    workspace "cli"
-    workspace "web"
-    workspace "dev"
 
     Mod+1 { focus-workspace-named "cli"; }
     Mod+2 { focus-workspace-named "web"; }
