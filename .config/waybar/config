@@ -11,15 +11,11 @@
         "all-outputs": false,
     
     "format-icons": {
-        "cli": "",
-        "web": "",
+        "cli": "",
+        "web": "",
         "dev": "",
         
-        "focused": "",
-        "active": "",
-        "urgent": "",
-        "empty": "",
-        "default": ""
+        "default": ""
     },
     
     "disable-click": false
