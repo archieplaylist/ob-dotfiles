@@ -156,7 +156,6 @@ binds {
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
 
-
     workspace "cli"
     workspace "web"
     workspace "dev"
@@ -205,9 +204,9 @@ binds {
     Mod+Ctrl+K     { focus-monitor-up; }
     Mod+Ctrl+L     { focus-monitor-right; }
 
-    Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "~/.config/kitty/run.sh"; }
-    Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock" { spawn "~/.config/niri/lockscreen.sh"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: kitty"        { spawn "~/.config/kitty/run.sh"; }
+    Mod+Space hotkey-overlay-title="Run an Application: fuzzel"     { spawn "fuzzel"; }
+    Super+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock"  { spawn "~/.config/niri/lockscreen.sh"; }
     // Mod+R hotkey-overlay-title="Run an Application: quickshell-launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
 
     // Example volume keys mappings for PipeWire & WirePlumber.
@@ -228,8 +227,8 @@ binds {
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
     // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp allow-when-locked=true      { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true    { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
     // You can bind mouse wheel scroll ticks using the following syntax.
     // These binds will change direction based on the natural-scroll setting.
@@ -285,17 +284,17 @@ binds {
     Mod+BracketRight { consume-or-expel-window-right; }
 
     // Consume one window from the right to the bottom of the focused column.
-    Mod+Comma  { consume-window-into-column; }
+    Mod+Comma       { consume-window-into-column; }
     // Expel the bottom window from the focused column to the right.
-    Mod+Period { expel-window-from-column; }
+    Mod+Period      { expel-window-from-column; }
 
-    Mod+M { switch-preset-column-width; }
+    Mod+M           { switch-preset-column-width; }
     // Cycling through the presets in reverse order is also possible.
     // Mod+R { switch-preset-column-width-back; }
-    Mod+Shift+R { switch-preset-window-height; }
-    Mod+Ctrl+R { reset-window-height; }
-    Mod+F { maximize-column; }
-    Mod+Shift+F { fullscreen-window; }
+    Mod+Shift+R     { switch-preset-window-height; }
+    Mod+Ctrl+R      { reset-window-height; }
+    Mod+F           { maximize-column; }
+    Mod+Shift+F     { fullscreen-window; }
 
     // Expand the focused column to space not taken up by other fully visible columns.
     // Makes the column "fill the rest of the space".
@@ -314,16 +313,16 @@ binds {
     // * adjust width as a percentage of screen width: "-10%" or "+10%"
     // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
     // set-column-width "100" will make the column occupy 200 physical screen pixels.
-    Mod+Minus { set-column-width "-10%"; }
-    Mod+Equal { set-column-width "+10%"; }
+    Mod+Minus   { set-column-width "-10%"; }
+    Mod+Equal   { set-column-width "+10%"; }
 
     // Finer height adjustments when in column with other windows.
-    Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Equal { set-window-height "+10%"; }
+    Mod+Shift+Minus     { set-window-height "-10%"; }
+    Mod+Shift+Equal     { set-window-height "+10%"; }
 
     // Move the focused window between the floating and the tiling layout.
-    Mod+Ctrl+Space       { toggle-window-floating; }
-    Mod+Shift+Space { switch-focus-between-floating-and-tiling; }
+    Mod+Ctrl+Space      { toggle-window-floating; }
+    Mod+Shift+Space     { switch-focus-between-floating-and-tiling; }
 
     // Applications such as remote-desktop clients and software KVM switches may
     // request that niri stops processing the keyboard shortcuts defined here
