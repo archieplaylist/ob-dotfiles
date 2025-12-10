@@ -22,7 +22,7 @@ sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire 
     lightdm lightdm-gtk \
     nautilus nautilus-extensions copyq \
     xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
-    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme papirus-icon-theme adw-gtk3-theme kvantum \
+    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme papirus-icon-theme adw-gtk3-theme kvantum fontawesome-6-free-fonts \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts qt6-qt5compat
 
