@@ -1,5 +1,5 @@
 * {
-    font-size: 16px;
+    font-size: 12px;
     font-family: "JetBrains Mono Nerd Font";
 }
 
@@ -12,7 +12,7 @@ window#waybar {
     background-color: #191724;
     color: #e0def4;
     border-radius: 10;
-    border: 3 solid #c4a7e7;
+    border: 1 solid #c4a7e7;
 }
 
 .modules-center {
@@ -21,7 +21,7 @@ window#waybar {
     background-color: #191724;
     color: #e0def4;
     border-radius: 10;
-    border: 3 solid #c4a7e7;
+    border: 1 solid #c4a7e7;
 }
 
 .modules-right {
@@ -30,7 +30,7 @@ window#waybar {
     background-color: #191724;
     color: #e0def4;
     border-radius: 10;
-    border: 3 solid #c4a7e7;
+    border: 1 solid #c4a7e7;
 }
 
 #workspaces button {

@@ -28,15 +28,15 @@
             "virtualmachine-2": "󰍹",
             "notes-2": "",
             "default": "..."
-        },
+        }
     },
 
     "custom/clockicon": {
-        "format": " ",
+        "format": " "
     },
 
     "clock": {
-        "format": "{:%a, %d.%m.%Y %H:%M}",
+        "format": "{:%a, %d-%m-%Y %H:%M}"
     },
 
     "custom/volumeicon": {
