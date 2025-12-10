@@ -22,7 +22,7 @@
         "default": ""
     },
     
-    "disable-click": false,
+    "disable-click": false
     },
 
     "custom/clockicon": {
