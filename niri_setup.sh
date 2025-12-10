@@ -20,9 +20,9 @@ echo ">>> Installing Core Dependencies & LightDM..."
 sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
-    nautilus nautilus-extensions \
+    nautilus nautilus-extensions copyq \
     xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
-    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme adw-gtk3-theme kvantum \
+    adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme papirus-icon-theme adw-gtk3-theme kvantum \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg alacritty jetbrains-mono-fonts qt6-qt5compat
 
