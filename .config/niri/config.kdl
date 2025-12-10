@@ -206,7 +206,7 @@ binds {
 
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty"        { spawn "~/.config/kitty/run.sh"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel"     { spawn "fuzzel"; }
-    Super+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock"  { spawn "~/.config/niri/lockscreen.sh"; }
+    Mod+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock"  { spawn "~/.config/niri/lockscreen.sh"; }
     // Mod+R hotkey-overlay-title="Run an Application: quickshell-launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
 
     // Example volume keys mappings for PipeWire & WirePlumber.
