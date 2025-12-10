@@ -105,9 +105,10 @@ hotkey-overlay {
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
 
-spawn-at-startup "quickshell"
+// spawn-at-startup "quickshell"
+spawn-at-startup "waybar"
 spawn-at-startup "xwayland-satellite"
-// spawn-sh-at-startup "~/.config/wallpaper/run.sh"
+spawn-sh-at-startup "~/.config/wallpaper/run.sh"
 
 spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 
@@ -199,7 +200,7 @@ binds {
 
     Mod+Return hotkey-overlay-title="Open a Terminal: kitty" { spawn "~/.config/kitty/run.sh"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Mod+R hotkey-overlay-title="Run an Application: quickshell-launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
+    // Mod+R hotkey-overlay-title="Run an Application: quickshell-launcher" { spawn "quickshell" "ipc" "call" "launcher" "toggle"; }
 
     Super+Shift+Q hotkey-overlay-title="Lock the Screen: swaylock" { spawn "~/.config/niri/lockscreen.sh"; }
 
