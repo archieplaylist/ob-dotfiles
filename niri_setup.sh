@@ -2,15 +2,13 @@
 set -e
 
 # ==========================================
-# Niri + Quickshell (Bar/Launcher/Notify)
+# Niri
 # OS: Fedora
-# Theme: Dark with Blur (Semi-Transparent)
 # ==========================================
 
 TARGET_USER=${SUDO_USER:-$(id -un)}
 USER_HOME=$(eval echo "~$TARGET_USER")
 CONFIG_DIR="$USER_HOME/.config"
-SRC_DIR="$USER_HOME/src"
 
 echo ">>> Target user: $TARGET_USER"
 
@@ -22,6 +20,7 @@ echo ">>> Installing Core Dependencies & LightDM..."
 sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
+    nautilus nautilus-extensions \
     xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
     adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme adw-gtk3-theme kvantum \
     libxkbcommon libinput libdisplay-info libseat glib2 \
@@ -43,7 +42,7 @@ for repo in "yalter/niri" "ulysg/xwayland-satellite" "errornointernet/quickshell
 done
 
 echo ">>> Installing Niri, XWayland-Satellite, and Quickshell..."
-sudo dnf install -y niri xwayland-satellite quickshell
+sudo dnf install -y niri xwayland-satellite quickshell waybar
 
 
 # ==========================================
@@ -63,7 +62,7 @@ sudo systemctl disable gdm.service || true
 mkdir -p "$CONFIG_DIR/quickshell"
 cp -rv .config/quickshell/* $CONFIG_DIR/quickshell/
 cp -rf .config/niri $CONFIG_DIR
-cp -rv .config/kitty/* ~/.config/kitty/ 2>/dev/null || true
+cp -rv .config/kitty ~/.config/ 2>/dev/null || true
 
 cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
 cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
@@ -79,7 +78,7 @@ touch ~/.config/Kvantum/kvantum.kvconfig
 sed -i '/^\[General\]$/,/^\[.*\]$/ s/^theme=.*/theme=KvGnomeDark/' ~/.config/Kvantum/kvantum.kvconfig
 
 # Fix ownership
-sudo chown -R "$TARGET_USER":"$TARGET_USER" "$USER_HOME/.config" "$USER_HOME/Pictures" "$USER_HOME/src"
+sudo chown -R "$TARGET_USER":"$TARGET_USER" "$USER_HOME/.config" "$USER_HOME/Pictures"
 
 echo ""
 echo "=========================================="
