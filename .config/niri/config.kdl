@@ -160,9 +160,9 @@ binds {
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
 
-    Mod+1 { focus-workspace-named "cli"; }
-    Mod+2 { focus-workspace-named "web"; }
-    Mod+3 { focus-workspace-named "dev"; }
+    Mod+1 { focus-workspace "cli"; }
+    Mod+2 { focus-workspace "web"; }
+    Mod+3 { focus-workspace "dev"; }
     Mod+4 { focus-workspace 4; }
     Mod+5 { focus-workspace 5; }
     Mod+6 { focus-workspace 6; }
@@ -170,9 +170,9 @@ binds {
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
 
-    Mod+Shift+1 { move-column-to-workspace-named "cli"; }
-    Mod+Shift+2 { move-column-to-workspace-named "web"; }
-    Mod+Shift+3 { move-column-to-workspace-named "dev"; }
+    Mod+Shift+1 { move-column-to-workspace "cli"; }
+    Mod+Shift+2 { move-column-to-workspace "web"; }
+    Mod+Shift+3 { move-column-to-workspace "dev"; }
     Mod+Shift+4 { move-column-to-workspace 4; }
     Mod+Shift+5 { move-column-to-workspace 5; }
     Mod+Shift+6 { move-column-to-workspace 6; }
