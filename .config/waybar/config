@@ -15,7 +15,7 @@
         "web": "",
         "dev": "",
         
-        "default": ""
+        "default": "@"
     },
     
     "disable-click": false
