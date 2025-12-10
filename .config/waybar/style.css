@@ -36,7 +36,7 @@ window#waybar {
 #workspaces button {
     all: unset;
     color: #e0def4;
-    padding: 8 19 8 16;
+    padding: 8 10 8 10;
     border-radius: 10;
     transition: .3s;
 }
