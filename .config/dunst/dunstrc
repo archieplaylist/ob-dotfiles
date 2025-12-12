@@ -197,7 +197,7 @@
 
     # Paths to default icons.
     #icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
-    icon_path = /usr/share/icons/Qogir/16/status:/usr/share/icons/Qogir/16/devices/:/usr/share/icons/Qogir/24/panel/:/usr/share/icons/Qogir/16/apps/:/usr/share/pixmaps/
+    icon_path = /usr/share/icons/Papirus-Dark/16x16/status:/usr/share/icons/Papirus-Dark/16x16/devices/:/usr/share/icons/Papirus-Dark/24x24/panel/:/usr/share/icons/Papirus-Dark/16x16/apps/:/usr/share/pixmaps/
     ### History ###
 
     # Should a notification popped up from history be sticky or timeout
@@ -229,7 +229,7 @@
     # corners.
     # The radius will be automatically lowered if it exceeds half of the
     # notification height to avoid clipping text and/or icons.
-    corner_radius = 10 
+    corner_radius = 8 
 
     # Ignore the dbus closeNotification message.
     # Useful to enforce the timeout set by dunst configuration. Without this
