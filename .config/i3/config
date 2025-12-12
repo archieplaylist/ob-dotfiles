@@ -31,20 +31,20 @@ font pango: FiraCode Nerd Font medium 9
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
+
+
 # exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 bindsym $mod+l exec --no-startup-id ~/.config/i3/scripts/blur-lock
 
 exec_always --no-startup-id sleep 1 && feh --bg-fill ~/.config/wallpaper/7.jpg
-
-# exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id /usr/libexec/polkit-mate-authentication-agent-1
-
 exec --no-startup-id xfce4-clipman
 exec_always --no-startup-id nm-applet
 exec --no-startup-id volumeicon
 exec --no-startup-id dunst
-
 exec --no-startup-id picom --config  ~/.config/picom/picom.conf
+exec --no-startup-id polybar -r
+
 
 #bindsym $mod+space exec --no-startup-id rofi -show run
 bindsym $mod+space exec --no-startup-id rofi -modi drun -show drun \
