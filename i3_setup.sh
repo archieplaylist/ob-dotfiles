@@ -16,6 +16,7 @@ mkdir -p ~/.config/polybar
 mkdir -p ~/.config/rofi
 mkdir -p ~/.config/wallpaper
 mkdir -p ~/.local/share/themes
+mkdir -p ~/.themes
 
 cp -rv .config/dunst/* ~/.config/dunst/ 2>/dev/null || true
 cp -rv .config/i3/* ~/.config/i3/ 2>/dev/null || true
@@ -27,7 +28,8 @@ cp -rv .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
 chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
 # GTK Theme
-tar -xvf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.local/share/themes/
+tar -xf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.local/share/themes/
+tar -xf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.themes/
 
 # Copy wallpaper files
 cp -r .config/wallpaper/* ~/.config/wallpaper/

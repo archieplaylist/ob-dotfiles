@@ -253,6 +253,7 @@ assign [class="thunar"] $ws3
 for_window [window_type="dialog"] floating enable
 for_window [window_type="utility"] floating enable
 for_window [window_type="toolbar"] floating enable
+for_window [title="(?i)settings"] floating enable
 
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [class="Clipgrab"] floating enable
@@ -271,7 +272,6 @@ for_window [class="Thus"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
 for_window [class="(?i)virtualbox"] floating enable border normal
 for_window [class="(?i)virtualbox"] fullscreen enable 
-for_window [class="Xfburn"] floating enable
 for_window [class="Shotwell"] floating enable
 for_window [title="xarchiver"] floating enable
 for_window [class="Nm-connection-editor"] floating enable
