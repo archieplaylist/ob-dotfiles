@@ -5,7 +5,7 @@ set -e
 sudo dnf update
 
 # Install Openbox, Polybar, a file manager, a terminal, and theming tools
-sudo dnf install -y curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm kitty xfce4-terminal xfce4-clipman lxappearance picom mate-polkit xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulseaudio pipewire-alsa wireplumber gtk2-engines papirus-icon-theme rofi fontawesome-6-free-fonts scrot
+sudo dnf install -y curl wget unzip neovim fastfetch htop polybar dunst feh git lightdm lightdm-gtk-greeter-settings lightdm-settings pcmanfm kitty xfce4-terminal xfce4-clipman lxappearance picom mate-polkit xdg-desktop-portal-gtk pavucontrol pipewire pipewire-pulseaudio pipewire-alsa wireplumber gtk2-engines papirus-icon-theme rofi fontawesome-6-free-fonts fira-code-fonts scrot
 
 # Create configuration directories
 mkdir -p ~/.config/dunst
