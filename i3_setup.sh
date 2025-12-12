@@ -387,7 +387,7 @@ case "$chosen" in
     "Reboot") systemctl reboot ;;
     "Lock") light-locker-command -l ;;
     "Suspend") systemctl suspend ;;
-    "Logout") openbox --exit ;;
+    "Logout") i3-msg exit ;;
 esac
 EOF
 
