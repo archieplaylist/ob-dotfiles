@@ -17,12 +17,12 @@ mkdir -p ~/.config/rofi
 mkdir -p ~/.config/wallpaper
 mkdir -p ~/.local/share/themes
 
-cp -v .config/dunst/* ~/.config/dunst/ 2>/dev/null || true
-cp -v .config/i3/* ~/.config/i3/ 2>/dev/null || true
-cp -v .config/kitty/*.conf ~/.config/kitty/ 2>/dev/null || true
-cp -v .config/picom/*.conf ~/.config/picom/ 2>/dev/null || true
-cp -v .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
-cp -v .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
+cp -rv .config/dunst/* ~/.config/dunst/ 2>/dev/null || true
+cp -rv .config/i3/* ~/.config/i3/ 2>/dev/null || true
+cp -rv .config/kitty/*.conf ~/.config/kitty/ 2>/dev/null || true
+cp -rv .config/picom/*.conf ~/.config/picom/ 2>/dev/null || true
+cp -rv .config/rofi/*.rasi ~/.config/rofi/ 2>/dev/null || true
+cp -rv .config/polybar/launch.sh ~/.config/polybar/ 2>/dev/null || true
 
 chmod +x ~/.config/polybar/launch.sh 2>/dev/null || true
 
