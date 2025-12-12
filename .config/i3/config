@@ -250,6 +250,10 @@ assign [class="firefox"] $ws2
 assign [class="thunar"] $ws3
 
 # Open specific applications in floating mode
+for_window [window_type="dialog"] floating enable
+for_window [window_type="utility"] floating enable
+for_window [window_type="toolbar"] floating enable
+
 for_window [title="alsamixer"] floating enable border pixel 1
 for_window [class="Clipgrab"] floating enable
 for_window [title="File Transfer*"] floating enable
@@ -258,7 +262,7 @@ for_window [class="GParted"] floating enable border normal
 for_window [title="i3_help"] floating enable sticky enable border normal
 for_window [class="Lightdm-gtk-greeter-settings"] floating enable
 for_window [class="Lxappearance"] floating enable sticky enable border normal
-for_window [class="Pavucontrol"] floating enable
+for_window [class="pavucontrol"] floating enable
 for_window [class="qt5ct"] floating enable sticky enable border normal
 for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
 for_window [class="Simple-scan"] floating enable border normal
@@ -270,4 +274,4 @@ for_window [class="(?i)virtualbox"] fullscreen enable
 for_window [class="Xfburn"] floating enable
 for_window [class="Shotwell"] floating enable
 for_window [title="xarchiver"] floating enable
-for_window [title="nm-connection-editor"] floating enable
+for_window [class="Nm-connection-editor"] floating enable
