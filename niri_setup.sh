@@ -59,19 +59,19 @@ sudo systemctl disable gdm.service || true
 # ==========================================
 
 # NIRI & Quickshell config
-mkdir -p "$CONFIG_DIR/quickshell"
-cp -rv .config/quickshell/* $CONFIG_DIR/quickshell/
+# mkdir -p "$CONFIG_DIR/quickshell"
+# cp -rv .config/quickshell/* $CONFIG_DIR/quickshell/
 cp -rf .config/niri $CONFIG_DIR
-cp -rv .config/kitty ~/.config/ 2>/dev/null || true
+# cp -rv .config/kitty ~/.config/ 2>/dev/null || true
 
 cp -rv .config/fuzzel ~/.config/ 2>/dev/null || true
-cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
-cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
-cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
-cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
+# cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
+# cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
+# cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
+# cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
 cp -rv .config/waybar ~/.config/ 2>/dev/null || true
 
-gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+# gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 # Kvantum theme
