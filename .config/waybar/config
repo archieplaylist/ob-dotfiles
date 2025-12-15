@@ -13,9 +13,7 @@
     "format-icons": {
         "cli": "",
         "web": "",
-        "dev": "",
-        
-        "default": "@"
+        "dev": ""
     },
     
     "disable-click": false

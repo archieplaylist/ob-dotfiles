@@ -58,19 +58,84 @@ sudo systemctl enable lightdm.service
 # ==========================================
 
 # NIRI & Quickshell config
-# mkdir -p "$CONFIG_DIR/quickshell"
-# cp -rv .config/quickshell/* $CONFIG_DIR/quickshell/
+
+# Simple: download Bibata v2.0.7, extract to ~/.icons and set as default cursor
+tmpdir=$(mktemp -d)
+echo "Downloading Bibata cursor theme to $tmpdir"
+url="https://github.com/ful1e5/Bibata_Cursor/releases/download/v2.0.7/Bibata-Modern-Classic.tar.xz"
+if command -v wget >/dev/null 2>&1; then
+    wget -qO "$tmpdir/bibata.tar.xz" "$url" || true
+elif command -v curl >/dev/null 2>&1; then
+    curl -sL -o "$tmpdir/bibata.tar.xz" "$url" || true
+fi
+if [ -f "$tmpdir/bibata.tar.xz" ]; then
+    mkdir -p "$HOME/.icons"
+    tar -xJf "$tmpdir/bibata.tar.xz" -C "$tmpdir" || true
+    # copy any extracted Bibata* directories into ~/.icons
+    find "$tmpdir" -maxdepth 1 -type d -name 'Bibata*' -exec cp -r {} "$HOME/.icons/" \; 2>/dev/null || true
+
+    cursor_name="Bibata-Modern-Classic"
+    if [ ! -d "$HOME/.icons/$cursor_name" ]; then
+        cursor_name=$(ls -1 "$HOME/.icons" 2>/dev/null | head -n1 || echo "$cursor_name")
+    fi
+
+    mkdir -p "$HOME/.icons/default"
+    cat > "$HOME/.icons/default/index.theme" <<IDX
+[Icon Theme]
+Inherits=$cursor_name
+IDX
+
+    # Set cursor theme for GTK2 (~/.gtkrc-2.0)
+    if [ -f "$HOME/.gtkrc-2.0" ]; then
+        if ! grep -q '^gtk-cursor-theme-name' "$HOME/.gtkrc-2.0" 2>/dev/null; then
+            printf "\ngtk-cursor-theme-name=\"%s\"\n" "$cursor_name" >> "$HOME/.gtkrc-2.0"
+        fi
+    else
+        printf "gtk-theme-name=\"Gruvbox-BL-LB-Dark\"\n" > "$HOME/.gtkrc-2.0"
+        printf "gtk-icon-theme-name=\"Papirus-Dark\"\n" >> "$HOME/.gtkrc-2.0"
+        printf "gtk-font-name=\"Sans 9\"\n" >> "$HOME/.gtkrc-2.0"
+        printf "gtk-cursor-theme-name=\"%s\"\n" "$cursor_name" >> "$HOME/.gtkrc-2.0"
+    fi
+
+    # Set cursor theme for GTK3/GTK4 settings files
+    for gtkfile in "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini"; do
+        mkdir -p "$(dirname "$gtkfile")"
+        if [ -f "$gtkfile" ]; then
+            if ! grep -q '^gtk-cursor-theme-name' "$gtkfile" 2>/dev/null; then
+                printf "\ngtk-cursor-theme-name = %s\n" "$cursor_name" >> "$gtkfile"
+            fi
+        else
+            cat > "$gtkfile" <<GTKSET
+[Settings]
+gtk-theme-name = Gruvbox-BL-LB-Dark
+gtk-icon-theme-name = Papirus-Dark
+gtk-font-name = Sans 9
+gtk-cursor-theme-name = $cursor_name
+GTKSET
+        fi
+    done
+
+    rm -rf "$tmpdir"
+fi
+
+
 cp -rf .config/niri $CONFIG_DIR
-# cp -rv .config/kitty ~/.config/ 2>/dev/null || true
+cp -rv .config/kitty ~/.config/ 2>/dev/null || true
 
 cp -rv .config/fuzzel ~/.config/ 2>/dev/null || true
-# cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
-# cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
-# cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
-# cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
+cp -rv .config/.gtkrc-2.0 ~/ 2>/dev/null || true
+cp -rv .config/gtk-3.0 ~/.config/ 2>/dev/null || true
+cp -rv .config/gtk-4.0 ~/.config/ 2>/dev/null || true
+cp -rv .config/wallpaper ~/.config/ 2>/dev/null || true
 cp -rv .config/waybar ~/.config/ 2>/dev/null || true
 
-# gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+mkdir -p ~/.local/share/themes
+mkdir -p ~/.themes
+
+tar -xf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.local/share/themes/
+tar -xf ./Gruvbox-BL-LB-dark.tar.xz -C ~/.themes/
+
+gsettings set org.gnome.desktop.interface gtk-theme 'Gruvbox-BL-LB-Dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
 # Kvantum theme
