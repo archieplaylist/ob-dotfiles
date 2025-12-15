@@ -17,14 +17,14 @@ echo ">>> Target user: $TARGET_USER"
 # ==========================================
 echo ">>> Installing Core Dependencies & LightDM..."
 # System utils and dependencies for Niri and the desktop environment
-sudo dnf install -y wget kitty curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
+sudo dnf install -y alacritty wget kitty curl git unzip xorg-x11-server-Xwayland pipewire wireplumber \
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
     nautilus nautilus-extensions copyq \
     xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
     adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme papirus-icon-theme adw-gtk3-theme kvantum fontawesome-6-free-fonts \
     libxkbcommon libinput libdisplay-info libseat glib2 \
-    swaybg alacritty jetbrains-mono-fonts qt6-qt5compat
+    swaybg jetbrains-mono-fonts qt6-qt5compat
 
 
 # ==========================================
@@ -42,7 +42,7 @@ for repo in "yalter/niri" "ulysg/xwayland-satellite" "errornointernet/quickshell
 done
 
 echo ">>> Installing Niri, XWayland-Satellite, and Quickshell..."
-sudo dnf install -y niri xwayland-satellite quickshell waybar
+sudo dnf install -y niri xwayland-satellite waybar
 
 
 # ==========================================
@@ -52,7 +52,6 @@ echo ">>> Enabling LightDM Display Manager..."
 # Set the default graphical target and enable the LightDM service
 sudo systemctl set-default graphical.target
 sudo systemctl enable lightdm.service
-sudo systemctl disable gdm.service || true
 
 # ==========================================
 # 4. Configuration
@@ -92,4 +91,3 @@ echo "3. Quickshell will load a Top Bar."
 echo "4. Click 'Menu' on the bar to see the Launcher."
 echo "5. Notifications will appear as Popups."
 echo ""
-echo "To edit the shell: nano ~/.config/quickshell/shell.qml"
