@@ -21,7 +21,7 @@ sudo dnf install -y alacritty wget kitty curl git unzip xorg-x11-server-Xwayland
     xauth xorg-x11-server-Xorg brightnessctl \
     lightdm lightdm-gtk \
     nautilus nautilus-extensions copyq \
-    xdg-desktop-portal-gtk mate-polkit xdg-user-dirs \
+    xdg-desktop-portal-gtk xdg-desktop-portal-gnome mate-polkit xdg-user-dirs gnome-keyring \
     adwaita-gtk2-theme gtk2-engines adwaita-cursor-theme papirus-icon-theme adw-gtk3-theme kvantum fontawesome-6-free-fonts \
     libxkbcommon libinput libdisplay-info libseat glib2 \
     swaybg jetbrains-mono-fonts qt6-qt5compat
